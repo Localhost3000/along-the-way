@@ -121,7 +121,7 @@ module.exports = function(grunt) {
 		'clean:dev',
 		'browserify:dev',
 		'copy:dev',
-		// Localhost and LiveReload init
+		// Localhost/LiveReload init
 		'express',
 		'open',
 		'watch:all'
