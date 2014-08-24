@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-clean');
@@ -7,7 +8,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-express');
 	grunt.loadNpmTasks('grunt-open');
-	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.initConfig({
 		jshint: {
@@ -95,7 +95,9 @@ module.exports = function(grunt) {
 		watch: {
 			all: {
 				files: [
-					'app/**/*',
+					'app/js/**/*',
+					'app/index.html',
+					'app/styles/**/*.scss',
 					'server.js',
 					'routes.js'
 				],
