@@ -1,6 +1,6 @@
 build
 app/bower_components
-app/bower-components
 node_modules
 .DS_Store
 .env
+.sass-cache
