@@ -24,6 +24,9 @@ module.exports = function(grunt) {
 					'build/',
 					'dist/'
 				]
+			},
+			test: {
+				src: ['test/testBundle.js']
 			}
 		},
     sass: {
@@ -33,14 +36,6 @@ module.exports = function(grunt) {
         }
 	    }
     },
-		mocha: {
-			backbonetest: {
-				src: ['test/test.html'],
-				options: {
-					run: true
-				}
-			}
-		},
 		browserify: {
 			dev: {
 				options: {
@@ -57,12 +52,20 @@ module.exports = function(grunt) {
 				options: {
 					transform: [
 						'debowerify',
-						'hbisfy'
+						'hbsify'
 					],
 					debug: true
 				},
-				src: ['test/mocha/backbone/**/*.js'],
+				src: ['test/backbone/**/*.js'],
 				dest: 'test/testBundle.js'
+			}
+		},
+		mocha: {
+			backbonetest: {
+        src: ['test/test.html'],
+        options: {
+          run: true
+        }
 			}
 		},
 		copy: {
@@ -95,7 +98,9 @@ module.exports = function(grunt) {
 		watch: {
 			all: {
 				files: [
-					'app/**/*',
+					'app/js/**/*',
+					'app/index.html',
+					'app/styles/**/*.scss',
 					'server.js',
 					'routes.js'
 				],
@@ -114,11 +119,12 @@ module.exports = function(grunt) {
 		// Add CSSmin and Uglify for dist build
 	});
 	grunt.registerTask('default', [
+		'clean:test',
 		'jshint',
-		'sass:dev',
-		// 'browserify:backbonetest', // For testing Backbone
-		// 'mocha:backbonetest', // For testing Backbone
+		'browserify:backbonetest', // Test Backbone
+		'mocha:backbonetest', // Test Backbone
 		'clean:dev',
+		'sass:dev',
 		'browserify:dev',
 		'copy:dev',
 		// Localhost/LiveReload init
