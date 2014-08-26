@@ -105,11 +105,21 @@ module.exports = function(grunt) {
 					'routes.js'
 				],
 				tasks: [
+					'clean:test',
+					'clean:dev',
 					'jshint',
 					'sass:dev',
-					'clean:dev',
 					'browserify:dev',
 					'copy:dev'
+				],
+				options: {
+					livereload: true
+				}
+			},
+			sass: {
+				files: ['app/styles/**/*.scss'],
+				tasks: [
+				'sass:dev'
 				],
 				options: {
 					livereload: true
@@ -131,5 +141,11 @@ module.exports = function(grunt) {
 		'express',
 		'open',
 		'watch:all'
+	]);
+	grunt.registerTask('style', [
+		'sass:dev',
+		'express',
+		'open',
+		'watch:sass'
 	]);
 };
