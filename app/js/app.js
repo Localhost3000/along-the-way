@@ -2,7 +2,7 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
-var Router = require('./routers/router');
+var Router = require('./router');
 var router = new Router();
 
 Backbone.history.start(); // Allows for fwd and back
