@@ -4,6 +4,11 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
+// Test business collection
+var BusinessCollection = require('../collections/business-collection');
+var testCollection = new BusinessCollection();
+testCollection.fetch();
+
 var InitView = Backbone.View.extend({
 	tagName: 'div',
 	initialize: function() {
