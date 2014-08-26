@@ -142,10 +142,4 @@ module.exports = function(grunt) {
 		'open',
 		'watch:all'
 	]);
-	grunt.registerTask('style', [
-		'sass:dev',
-		'express',
-		'open',
-		'watch:sass'
-	]);
 };
