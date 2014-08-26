@@ -5,7 +5,6 @@ Backbone.$ = $;
 module.exports = Backbone.Router.extend({
 	routes: {
 		'': 'init',
-		// '/': 'init',
 		'map': 'map'
 	},
 	init: require('./init'),
