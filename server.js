@@ -1,3 +1,5 @@
+'use strict';
+
 // Dependencies
 var express = require('express');
 var http = require('http');
