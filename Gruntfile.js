@@ -16,7 +16,10 @@ module.exports = function(grunt) {
 				'routes.js',
 				'server.js',
 				'test/**/*.js'
-			]
+			],
+		options: {
+				'jshintrc': true
+			}
 		},
 		clean: {
 			dev: {
