@@ -10,7 +10,7 @@ module.exports = Backbone.Router.extend({
 		'map': 'map',
 		'destinations': 'businessCollection'
 	},
-	init: require('./init'),
-	map: require('./map'),
-	businessCollection: require('./business-collection')
+	init: require('./init-route'),
+	map: require('./map-route'),
+	businessCollection: require('./business-collection-route')
 });
