@@ -7,10 +7,6 @@ var querystring = require('querystring');
 var RouteModel = require('../models/route-model');
 var routeModel = new RouteModel();
 
-var BusinessCollection = require('../collections/business-collection');
-var businessCollection = new BusinessCollection({one: '1'}, 'www.test.com');
-console.log(businessCollection.url);
-
 module.exports = function() {
 	// Parse the URL from '?' on
 	var params = querystring.parse(window.location.href.split('?')[1]);
