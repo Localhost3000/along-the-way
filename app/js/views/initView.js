@@ -8,7 +8,8 @@ var InitView = Backbone.View.extend({
 		this.render();
 	},
 	render: function() {
-		// Add logic for finding current location
+		// Add logic for finding current location!
+
 		// If current location exists, set #start to it; otherwise, leave a placeholder
 		var template = require('../templates/initTemplate.hbs');
 		this.$el.html(template());
@@ -19,11 +20,18 @@ var InitView = Backbone.View.extend({
 	},
 	search: function(e) {
 		e.preventDefault(); // Otherwise the page will reload!
+
+		// Grab start and destination from the form
 		var start = this.$el.closest('div').find('#start').val();
 		var destination = this.$el.closest('div').find('#destination').val();
-		console.log('Start: ' + start + ' | Finish: ' + destination);
-		// We'll need to manipulate values into a string for Google API
-		// Then we'll need to Adam's API wrapper with string
+
+		// Encode the route as a URL
+		var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
+
+		// Navigate to #map with that URL
+		Backbone.history.navigate('#map' + '?' + routeUrl, {
+			trigger: true
+		});
 	}
 });
 
