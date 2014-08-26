@@ -9,22 +9,23 @@ var BusinessView = require('../views/business-view');
 module.exports = Backbone.View.extend({
   tagName: 'div',
 
-  initialize: function(){
+  initialize: function() {
     this.render();
     this.collection.on('add', this.addOne, this);
     this.collection.on('reset', this.addAll, this);
   },
-  addOne: function(business){
+
+  addOne: function(business) {
     var businessView = new BusinessView({model: business});
     this.$el.children('#put_here').append(businessView.$el);
   },
 
-  addAll: function(){
+  addAll: function() {
     this.$el.children('#put_here').html('');
     this.collection.forEach(this.addOne);
   },
 
-  render: function(){
+  render: function() {
     var template = require('../templates/business-collection-templates.hbs');
     this.$el.html(template());
     this.addAll();

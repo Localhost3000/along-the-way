@@ -11,7 +11,7 @@ var InitView = Backbone.View.extend({
 		// Add logic for finding current location!
 
 		// If current location exists, set #start to it; otherwise, leave a placeholder
-		var template = require('../templates/initTemplate.hbs');
+		var template = require('../templates/init-template.hbs');
 		this.$el.html(template());
 		return this;
 	},

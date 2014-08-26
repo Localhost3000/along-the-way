@@ -10,7 +10,7 @@ var MapView = Backbone.View.extend({
 	render: function() {
 		// Add logic for finding current location
 		// If current location exists, set #start to it; otherwise, leave a placeholder
-		var template = require('../templates/mapTemplate.hbs');
+		var template = require('../templates/map-template.hbs');
 		var data = this.model.attributes;
 		this.$el.html(template(data));
 		return this;
