@@ -44,13 +44,13 @@ var InitView = Backbone.View.extend({
 
 
 
-		// Encode the route as a URL
-		var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
+		// // Encode the route as a URL
+		// var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
 
-		// Navigate to #map with that URL
-		Backbone.history.navigate('#map' + '?' + routeUrl, {
-			trigger: true
-		});
+		// // Navigate to #map with that URL
+		// Backbone.history.navigate('#map' + '?' + routeUrl, {
+		// 	trigger: true
+		// });
 	}
 });
 
