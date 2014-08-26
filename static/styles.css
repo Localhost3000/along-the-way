@@ -54,7 +54,7 @@ input {
   border-radius: 5px;
 }
 
-input:focus, textarea:focus {
+input:focus {
     border: 1px solid rgba(255,140,0,1.00);
 }
 

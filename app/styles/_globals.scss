@@ -1,12 +1,10 @@
 $white: #fff;
 $orange: #ffa500;
-$blue: #0140CA;
+$blue: #0266C8;
 
 body {
-	width: 800px;
-	height: 800px;
+	width: 100%;
 	margin: 0 auto;
-	text-align:center;
+	font-family: "Times New Roman", Georgia, Serif;
 	background: $white;
-	border: 2px solid $orange;
 }

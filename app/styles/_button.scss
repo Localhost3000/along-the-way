@@ -1,6 +1,13 @@
 #search {
-  width: 120px;
-  height: 34px;
-  border: none;
-  margin-top: 20px;
+width: 200px;
+height: 100px;
+font-size: 1.6em;
+border: 1px solid #dedede;
+margin-top: 76px;
+margin-right: 130px;
+cursor: pointer;
+}
+
+#search:hover {
+  background-color: rgba(255,140,0,1.00);
 }

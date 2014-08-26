@@ -1,21 +1,36 @@
 section {
-	width: 600px;
-	margin: 0 auto;
-	background: $orange;
+display: block;
+margin-top: 100px;
+margin-left: auto;
+margin-right: auto;
+width: 500px;
+}
+
+label {
+	font-size: 1.4em;
+	display: block;
+	margin-top: 40px;
+	margin-bottom: 10px;
+	letter-spacing: 2px;
 }
 
 .init {
-	text-align: left;
-	input {
-		float: left;
-		clear: left;
-		width: 400px;
-		height: 30px;
-		padding: 10px;
-		margin-top: 3px;
-		font-size: 0.8em;
-		color: $orange;
-	}
+	margin: 0 auto;
+	width: 459px;
+}
+
+input {
+  width: 440px;
+  height: 30px;
+  background: #efefef;
+  border: 1px solid #dedede;
+  padding: 10px;
+  margin-top: 3px;
+  font-size: 1.2em;
+  color: #3a3a3a;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
 }
 
 input:focus {

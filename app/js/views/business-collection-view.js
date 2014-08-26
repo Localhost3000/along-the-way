@@ -1,4 +1,4 @@
-var Backbone = require('backbone');
+/*var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
@@ -24,10 +24,11 @@ module.exports = Backbone.View.extend({
     this.collection.forEach(this.addOne);
   },
 
-  render: function(){  
+  render: function(){
     var template = require('../templates/business-collection-templates.hbs');
     this.$el.html(template());
     this.addAll();
     return this;
   }
 });
+*/
