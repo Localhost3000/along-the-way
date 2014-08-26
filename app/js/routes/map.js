@@ -14,7 +14,7 @@ module.exports = function() {
 	var params = querystring.parse(window.location.href.split('?')[1]);
 
 	// If we don't have necessary params, redirect to root and return false ...
-	if (!(params.hasOwnProperty('start') && params.hasOwnProperty('dest'))) {
+	if (!(params.start && params.dest)) {
 		Backbone.history.navigate('/', {
 			trigger: true
 		});
