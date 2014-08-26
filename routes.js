@@ -11,12 +11,12 @@ var yelpAPI = new YelpAPI({
 
 module.exports = function(app) {
 
-	var api = '/api/0_0_1';
+	var api = '/api/0_0_1/:location/:options';
 
 	app.get(api, function(req, res) {
-		var location = req.searchLocation || 'Seattle';
-		var params = req.params || {};
-		yelpAPI.searchLocation(location, params, function(err, data) {
+		var location = req.params.location || 'Seattle';
+		var options = JSON.parse(req.params.options) || {};
+		yelpAPI.searchLocation(location, options, function(err, data) {
 			return res.status(200).json(data);
 		});
 	});

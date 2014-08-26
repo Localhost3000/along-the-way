@@ -4,11 +4,6 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
-// Test business collection
-var BusinessCollection = require('../collections/business-collection');
-var testCollection = new BusinessCollection();
-testCollection.fetch();
-
 var InitView = Backbone.View.extend({
 	tagName: 'div',
 	initialize: function() {
@@ -32,6 +27,23 @@ var InitView = Backbone.View.extend({
 		var start = this.$el.closest('div').find('#start').val();
 		var destination = this.$el.closest('div').find('#destination').val();
 
+
+
+		// ================================
+		// Test business collection
+		var RouteModel = require('../models/route-model');
+		var BusinessCollection = require('../collections/business-collection');
+
+		var routeModel = new RouteModel();
+		// routeModel.set('start', start);
+		// routeModel.set('dest', destination);
+		var testCollection = new BusinessCollection(start, {});
+
+		testCollection.fetch();
+		//==================================
+
+
+
 		// Encode the route as a URL
 		var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
 
@@ -41,5 +53,11 @@ var InitView = Backbone.View.extend({
 		});
 	}
 });
+
+
+
+
+
+
 
 module.exports = InitView;

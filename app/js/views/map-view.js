@@ -1,22 +1,46 @@
-'use strict';
+"use strict";
 
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
-var MapView = Backbone.View.extend({
-	tagName: 'div',
-	initialize: function() {
-		this.render();
-	},
-	render: function() {
-		// Add logic for finding current location
-		// If current location exists, set #start to it; otherwise, leave a placeholder
-		var template = require('../templates/map-template.hbs');
-		var data = this.model.attributes;
-		this.$el.html(template(data));
-		return this;
-	},
-});
+module.exports = Backbone.View.extend({
+  tagName: 'div',
+  id: 'map-canvas',
 
-module.exports = MapView;
+  initialize: function(){
+
+    var mapOptions = {
+      zoom: this.model.get('zoom'),
+    };
+    var map = new google.maps.Map(this.el, mapOptions);
+
+    this.getDirections(map);
+    this.render();
+  },
+
+  getDirections: function(map){
+    var directionsService = new google.maps.DirectionsService();
+    var directionsDisplay = new google.maps.DirectionsRenderer();
+
+    directionsDisplay.setMap(map);
+
+    var request = {
+      origin: this.model.get('start'),
+      destination: this.model.get('end'),
+      travelMode: google.maps.DirectionsTravelMode.WALKING
+    };
+
+    directionsService.route(request, function(response, status){
+      if (status === google.maps.DirectionsStatus.OK){
+        directionsDisplay.setDirections(response);
+      }
+    });
+    this.render();
+  },
+
+  render: function(){
+    $('map-canvas').replaceWith(this.$el);
+    return this;
+  },
+});
