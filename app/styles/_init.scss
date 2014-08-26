@@ -1,7 +1,23 @@
+section {
+	width: 600px;
+	margin: 0 auto;
+	background: $orange;
+}
+
 .init {
-	text-align: center;
+	text-align: left;
 	input {
 		float: left;
 		clear: left;
+		width: 400px;
+		height: 30px;
+		padding: 10px;
+		margin-top: 3px;
+		font-size: 0.8em;
+		color: $orange;
 	}
+}
+
+input:focus {
+	border: 1px solid $orange;
 }

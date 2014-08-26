@@ -48,12 +48,39 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+:focus {
+  outline: none; }
+
 body {
-  width: 100%;
-  margin: auto; }
+  width: 800px;
+  height: 800px;
+  margin: 0 auto;
+  text-align: center;
+  background: white;
+  border: 2px solid orange; }
+
+section {
+  width: 600px;
+  margin: 0 auto;
+  background: orange; }
 
 .init {
-  text-align: center; }
+  text-align: left; }
   .init input {
     float: left;
-    clear: left; }
+    clear: left;
+    width: 400px;
+    height: 30px;
+    padding: 10px;
+    margin-top: 3px;
+    font-size: 0.8em;
+    color: orange; }
+
+input:focus {
+  border: 1px solid orange; }
+
+#search {
+  width: 120px;
+  height: 34px;
+  border: none;
+  margin-top: 20px; }

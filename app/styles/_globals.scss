@@ -1,4 +1,12 @@
+$white: #fff;
+$orange: #ffa500;
+$blue: #0140CA;
+
 body {
-	width: 100%;
-	margin: auto;
+	width: 800px;
+	height: 800px;
+	margin: 0 auto;
+	text-align:center;
+	background: $white;
+	border: 2px solid $orange;
 }

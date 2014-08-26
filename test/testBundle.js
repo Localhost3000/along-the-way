@@ -12153,7 +12153,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "";
 
 
-  buffer += "<header>\n	<h1>Along the Way</h1>\n</header>\n<form class=\"init\">\n	<input name=\"start\" id=\"start\" placeholder=\"Will be populated automatically\">\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n	<input type=\"submit\" id=\"search\" value=\"Go!\">\n</form>\n";
+  buffer += "<header>\n	<h1>Along the Way</h1>\n</header>\n<section>\n<form class=\"init\">\n	<input name=\"start\" id=\"start\" placeholder=\"Will be populated automatically\">\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n	<input type=\"submit\" id=\"search\" value=\"Go!\">\n</form>\n</section>\n\n";
   return buffer;
   });
 
