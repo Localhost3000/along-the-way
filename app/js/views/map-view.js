@@ -9,7 +9,6 @@ module.exports = Backbone.View.extend({
   id: 'map-canvas',
 
   initialize: function(){
-
     var mapOptions = {
       zoom: this.model.get('zoom'),
     };
@@ -17,12 +16,12 @@ module.exports = Backbone.View.extend({
 
     this.getDirections(map);
     this.render();
+    console.log('We\'re in the view, and the model says: ' + this.model.get('start'));
   },
 
   getDirections: function(map){
     var directionsService = new google.maps.DirectionsService();
     var directionsDisplay = new google.maps.DirectionsRenderer();
-
     directionsDisplay.setMap(map);
 
     var request = {
@@ -31,7 +30,7 @@ module.exports = Backbone.View.extend({
       travelMode: google.maps.DirectionsTravelMode.WALKING
     };
 
-    directionsService.route(request, function(response, status){
+    directionsService.route(request, function(response, status) {
       if (status === google.maps.DirectionsStatus.OK){
         directionsDisplay.setDirections(response);
       }
