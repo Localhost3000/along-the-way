@@ -16,7 +16,6 @@ module.exports = Backbone.View.extend({
 
     this.getDirections(map);
     this.render();
-    console.log('We\'re in the view, and the model says: ' + this.model.get('start'));
   },
 
   getDirections: function(map){

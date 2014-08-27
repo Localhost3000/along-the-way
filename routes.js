@@ -11,13 +11,28 @@ var yelpAPI = new YelpAPI({
 
 module.exports = function(app) {
 
-	var api = '/api/0_0_1/:location/:options';
+	var api = '/api/0_0_1/:locations/:options';
 
 	app.get(api, function(req, res) {
-		var location = req.params.location || 'Seattle';
+		var locations = JSON.parse(req.params.locations) || [{}];
 		var options = JSON.parse(req.params.options) || {};
-		yelpAPI.searchLocation(location, options, function(err, data) {
-			return res.status(200).json(data);
+		var allBusinesses = []; // (Will hold master list of businesses)
+
+		locations.forEach(function(location) {
+			// Prepare a string version, to keep Yelp happy:
+			var stringLocation = location.lat + ',' + location.lng;
+			// Run each point through the Yelp API
+			yelpAPI.searchCoordinates(stringLocation, options, function(err, data) {
+				if (!err) {
+					allBusinesses.push(data);
+				} else {
+					console.log('Error in the Yelp callback!');
+				}
+				// When we're done, return master array to be parsed by business collection
+				if (allBusinesses.length === locations.length) {
+					return res.status(200).send(allBusinesses);
+				}
+			});
 		});
 	});
 };
