@@ -33,8 +33,25 @@ module.exports = Backbone.View.extend({
     directionsService.route(request, function(response, status) {
       if (status === google.maps.DirectionsStatus.OK){
         directionsDisplay.setDirections(response);
+
+        // One leg for each waypoint
+        var legs = response.routes[0].legs[0];
+
+        // Array containing each separate step along a leg
+        var steps = legs.steps;
+
+        // Coordinates for Yelp searches
+        var routeIntervals = [];
+
+        steps.forEach(function(step) {
+
+          // Grab latitude and longitude from each starting point
+          routeIntervals.push({ lat: step.start_location.k, lon: step.start_location.B });
+
+        });
       }
     });
+
     this.render();
   },
 
