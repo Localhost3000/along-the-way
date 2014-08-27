@@ -48,6 +48,15 @@ module.exports = Backbone.View.extend({
           // Grab latitude and longitude from each starting point
           routeIntervals.push({ lat: step.start_location.k, lon: step.start_location.B });
 
+          // If the distance between intervals is greater than 300 meters
+          // calculate and intermediate point
+          if(step.distance.value > 300) {
+            var lat = (step.start_location.k + step.end_location.k) / 2;
+            var lon = (step.start_location.B + step.end_location.B) / 2;
+            var midpoint = { lat: lat, lon: lon };
+
+            routeIntervals.push(midpoint);
+          }
         });
       }
     });
