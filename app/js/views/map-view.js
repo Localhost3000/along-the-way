@@ -8,11 +8,20 @@ module.exports = Backbone.View.extend({
   tagName: 'div',
   id: 'map-canvas',
 
-  initialize: function(){
+  initialize: function(options){
+    this.businesses = options.businesses;
     var mapOptions = {
       zoom: this.model.get('zoom'),
     };
     var map = new google.maps.Map(this.el, mapOptions);
+
+    this.businesses.forEach(function(business){
+      var marker = new google.maps.Marker({
+        position: business.get('address'),
+        map: map,
+        title: business.get('name')
+      });
+    });
 
     this.getDirections(map);
     this.render();
