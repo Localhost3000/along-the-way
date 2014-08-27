@@ -39,7 +39,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    $('map-canvas').replaceWith(this.$el);
+    $('#backbone').replaceWith(this.$el);
     return this;
   },
 });
