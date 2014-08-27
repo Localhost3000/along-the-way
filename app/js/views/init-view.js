@@ -27,14 +27,37 @@ var InitView = Backbone.View.extend({
 		var start = this.$el.closest('div').find('#start').val();
 		var destination = this.$el.closest('div').find('#destination').val();
 
-		// Encode the route as a URL
-		var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
 
-		// Navigate to #map with that URL
-		Backbone.history.navigate('#map' + '?' + routeUrl, {
-			trigger: true
-		});
+
+		// ================================
+		// Test business collection
+		var RouteModel = require('../models/route-model');
+		var BusinessCollection = require('../collections/business-collection');
+
+		var routeModel = new RouteModel();
+		// routeModel.set('start', start);
+		// routeModel.set('dest', destination);
+		var testCollection = new BusinessCollection(start, {});
+
+		testCollection.fetch();
+		//==================================
+
+
+
+		// // Encode the route as a URL
+		// var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
+
+		// // Navigate to #map with that URL
+		// Backbone.history.navigate('#map' + '?' + routeUrl, {
+		// 	trigger: true
+		// });
 	}
 });
+
+
+
+
+
+
 
 module.exports = InitView;

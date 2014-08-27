@@ -141,8 +141,8 @@ module.exports = function(grunt) {
 		'browserify:dev',
 		'copy:dev',
 		// Localhost/LiveReload init
-		'express',
-		'open',
+		// 'express',
+		// 'open',
 		'watch:all'
 	]);
 };

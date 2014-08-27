@@ -18,7 +18,8 @@
   "homepage": "https://github.com/Localhost3000/along-the-way",
   "dependencies": {
     "body-parser": "^1.6.3",
-    "express": "^4.7.4"
+    "express": "^4.7.4",
+    "oauth": "^0.9.12"
   },
   "devDependencies": {
     "backbone": "^1.1.2",
