@@ -3,6 +3,7 @@
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
+var geocoder = new google.maps.Geocoder();
 
 module.exports = Backbone.View.extend({
   tagName: 'div',
@@ -16,12 +17,19 @@ module.exports = Backbone.View.extend({
     var map = new google.maps.Map(this.el, mapOptions);
 
     this.businesses.forEach(function(business){
-      var marker = new google.maps.Marker({
-        position: business.get('address'),
-        map: map,
-        title: business.get('name')
-      });
+      geocoder.geocode( { 'address': business.get('address')}, 
+        function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+          } else {
+            console.log("Geocode was not successful for the following reason: " + status);
+          }
+        });
     });
+
 
     this.getDirections(map);
     this.render();

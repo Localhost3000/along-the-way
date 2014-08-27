@@ -11,9 +11,9 @@ var routeModel = new RouteModel();
 var MarkerModel = require('../models/business-model-test');
 var Markers = require('../collections/businesses-test');
 var markers = new Markers([
-  { name: "Test", address: { lat: 42.3352, lng: -122},
+  { name: "Test", address: "Kirkland, WA",
   rating: 4.5, categories: "Test Food"},
-  { name: "test2", address: {lat: 48, lng: -122 },
+  { name: "test2", address: "Federal Way, WA",
   rating: 3, categories: "test drinks"}
   ]);
 
