@@ -9,17 +9,18 @@ var InitView = Backbone.View.extend({
 	initialize: function() {
 		this.render();
 	},
-	render: function() {
-		// Add logic for finding current location!
 
-		// If current location exists, set #start to it; otherwise, leave a placeholder
+	render: function() {
+		// Add logic for setting current location as default?
 		var template = require('../templates/init-template.hbs');
 		this.$el.html(template());
 		return this;
 	},
+
 	events: {
 		'click #search': 'search'
 	},
+
 	search: function(e) {
 		e.preventDefault(); // Otherwise the page will reload!
 
@@ -27,37 +28,22 @@ var InitView = Backbone.View.extend({
 		var start = this.$el.closest('div').find('#start').val();
 		var destination = this.$el.closest('div').find('#destination').val();
 
+		// Pass data into the model (which is owned by the router)
+		this.model.set('start', start);
+		this.model.set('end', destination);
+		console.log('After change, in the model: ' + this.model.get('start'));
 
-
-		// ================================
-		// Test business collection
-		var RouteModel = require('../models/route-model');
+		// To do: add Google API call that gets route midpoints
+		// Pass them into new BusinessCollection(), instead of start
 		var BusinessCollection = require('../collections/business-collection');
-
-		var routeModel = new RouteModel();
-		// routeModel.set('start', start);
-		// routeModel.set('dest', destination);
 		var testCollection = new BusinessCollection(start, {});
+		testCollection.fetch(); // Populates businesses asynchronously
 
-		testCollection.fetch();
-		//==================================
-
-
-
-		// // Encode the route as a URL
-		// var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
-
-		// // Navigate to #map with that URL
-		// Backbone.history.navigate('#map' + '?' + routeUrl, {
-		// 	trigger: true
-		// });
+		// Finally, hit up the next view:
+		Backbone.history.navigate('#map', {
+			trigger: true
+		});
 	}
 });
-
-
-
-
-
-
 
 module.exports = InitView;
