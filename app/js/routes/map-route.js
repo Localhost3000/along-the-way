@@ -5,13 +5,16 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
-var querystring = require('querystring');
-
-var RouteModel = require('../models/route-model');
-var routeModel = new RouteModel();
+var Markers = require('../collections/businesses-test');
+var markers = new Markers([
+  { name: "Test", address: "Kirkland, WA",
+  rating: 4.5, categories: "Test Food"},
+  { name: "test2", address: "Federal Way, WA",
+  rating: 3, categories: "test drinks"}
+  ]);
 
 module.exports = function() {
 	var MapView = require('../views/map-view');
-	var mapView = new MapView({model: this.mapModel});
-	$('#backbone').html(mapView.$el);
+	var mapView = new MapView({model: this.mapModel, businesses: markers});
+  $('#backbone').html(mapView.el);
 };
