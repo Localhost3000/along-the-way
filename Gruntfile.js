@@ -108,7 +108,7 @@ module.exports = function(grunt) {
 					'routes.js'
 				],
 				tasks: [
-					'clean:test',
+					// 'clean:test',
 					'clean:dev',
 					'jshint',
 					'sass:dev',
@@ -132,10 +132,10 @@ module.exports = function(grunt) {
 		// Add CSSmin and Uglify for dist build
 	});
 	grunt.registerTask('default', [
-		'clean:test',
+		// 'clean:test',
 		'jshint',
-		'browserify:backbonetest', // Test Backbone
-		'mocha:backbonetest', // Test Backbone
+		// 'browserify:backbonetest', // Test Backbone
+		// 'mocha:backbonetest', // Test Backbone
 		'clean:dev',
 		'sass:dev',
 		'browserify:dev',

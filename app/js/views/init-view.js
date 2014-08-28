@@ -9,55 +9,94 @@ var InitView = Backbone.View.extend({
 	initialize: function() {
 		this.render();
 	},
-	render: function() {
-		// Add logic for finding current location!
 
-		// If current location exists, set #start to it; otherwise, leave a placeholder
+	render: function() {
+		// Add logic for setting current location as default?
 		var template = require('../templates/init-template.hbs');
 		this.$el.html(template());
 		return this;
 	},
+
 	events: {
 		'click #search': 'search'
 	},
+
+	// Begin transplant
+  getDirections: function(callback){
+    var directionsService = new google.maps.DirectionsService();
+    // var directionsDisplay = new google.maps.DirectionsRenderer();
+    // directionsDisplay.setMap(map);
+
+    var request = {
+      origin: this.model.get('start'),
+      destination: this.model.get('end'),
+      travelMode: google.maps.DirectionsTravelMode.WALKING
+    };
+
+    directionsService.route(request, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK){
+        // directionsDisplay.setDirections(response);
+
+        // One leg for each waypoint
+        var legs = response.routes[0].legs[0];
+
+        // Array containing each separate step along a leg
+        var steps = legs.steps;
+
+        // Coordinates for Yelp searches
+        var routeIntervals = [];
+
+        steps.forEach(function(step) {
+
+          // Grab latitude and longitude from each starting point
+          routeIntervals.push({ lat: step.start_location.k, lon: step.start_location.B });
+
+          // If the distance between intervals is greater than 300 meters
+          // calculate and intermediate point
+          if(step.distance.value > 300) {
+            var lat = (step.start_location.k + step.end_location.k) / 2;
+            var lon = (step.start_location.B + step.end_location.B) / 2;
+            var midpoint = { lat: lat, lon: lon };
+
+            routeIntervals.push(midpoint);
+          }
+        });
+				callback(routeIntervals);
+      }
+    });
+  },
+
+	// End transplant
+
 	search: function(e) {
 		e.preventDefault(); // Otherwise the page will reload!
+		var routeIntervals;
 
 		// Grab start and destination from the form
 		var start = this.$el.closest('div').find('#start').val();
 		var destination = this.$el.closest('div').find('#destination').val();
 
+		// Override for testing
+		// start = '511 N Boren AVE Seattle, WA';
+		// destination = '2210 Westlake Ave Seattle WA';
+
+		// Pass data into the model (which is owned by the router, and globally visible)
+		this.model.set('start', start);
+		this.model.set('end', destination);
+
+		// Please work!
+		this.getDirections(function(routeIntervals) {
+			var BusinessCollection = require('../collections/business-collection');
+			var businessCollection = new BusinessCollection(start, {});
+			businessCollection.search(routeIntervals);
+		});
 
 
-		// ================================
-		// Test business collection
-		var RouteModel = require('../models/route-model');
-		var BusinessCollection = require('../collections/business-collection');
-
-		var routeModel = new RouteModel();
-		// routeModel.set('start', start);
-		// routeModel.set('dest', destination);
-		var testCollection = new BusinessCollection(start, {});
-
-		testCollection.fetch();
-		//==================================
-
-
-
-		// // Encode the route as a URL
-		// var routeUrl = 'start=' + encodeURI(start) + '&dest=' + encodeURI(destination);
-
-		// // Navigate to #map with that URL
-		// Backbone.history.navigate('#map' + '?' + routeUrl, {
-		// 	trigger: true
-		// });
+		// Finally, hit up the next view:
+		Backbone.history.navigate('#map', {
+			trigger: true
+		});
 	}
 });
-
-
-
-
-
-
 
 module.exports = InitView;

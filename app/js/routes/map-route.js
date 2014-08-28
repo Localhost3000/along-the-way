@@ -1,34 +1,20 @@
 'use strict';
+// update
 
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
-var querystring = require('querystring');
-
-var RouteModel = require('../models/route-model');
-var routeModel = new RouteModel();
+var Markers = require('../collections/businesses-test');
+var markers = new Markers([
+  { name: "Test", address: "Kirkland, WA",
+  rating: 4.5, categories: "Test Food"},
+  { name: "test2", address: "Federal Way, WA",
+  rating: 3, categories: "test drinks"}
+  ]);
 
 module.exports = function() {
-	// Parse the URL from '?' on
-	var params = querystring.parse(window.location.href.split('?')[1]);
-
-	// If we don't have necessary params, redirect to root and return false ...
-	if (!(params.start && params.dest)) {
-		Backbone.history.navigate('/', {
-			trigger: true
-		});
-		return false; // (So we don't continue execution and paint mapView over initView)
-	}
-
-	// ... Otherwise, put the variables in a route model
-	var start = params.start;
-	var destination = params.dest;
-	routeModel.set('start', start);
-	routeModel.set('destination', destination);
-
-	// And generate the view:
 	var MapView = require('../views/map-view');
-	var mapView = new MapView({model: routeModel});
-	$('#backbone').html(mapView.$el);
+	var mapView = new MapView({model: this.mapModel, businesses: markers});
+  $('#backbone').html(mapView.el);
 };
