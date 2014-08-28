@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 		jshint: {
 			files: [
 				'app/js/**/*.js',
-				'routes.js',
+				'expressRoutes.js',
 				'server.js',
 				'test/**/*.js'
 			],
@@ -105,7 +105,7 @@ module.exports = function(grunt) {
 					'app/index.html',
 					'app/styles/**/*.scss',
 					'server.js',
-					'routes.js'
+					'expressRoutes.js'
 				],
 				tasks: [
 					// 'clean:test',
