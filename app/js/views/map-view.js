@@ -3,7 +3,7 @@
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
-var geocoder = new google.maps.Geocoder();
+
 
 module.exports = Backbone.View.extend({
   tagName: 'div',
@@ -14,6 +14,8 @@ module.exports = Backbone.View.extend({
     var mapOptions = {
       zoom: this.model.get('zoom'),
     };
+
+    var geocoder = new google.maps.Geocoder();
     var map = new google.maps.Map(this.el, mapOptions);
 
     this.businesses.forEach(function(business){
