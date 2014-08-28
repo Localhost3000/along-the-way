@@ -12,7 +12,7 @@ module.exports = Backbone.Collection.extend({
 
 	model: BusinessModel,
 
-	url: function(location, params) {
+	url: function() {
 		var URLstring = 'api/0_0_1/' +
 			JSON.stringify(this.location) +
 			'/' +
