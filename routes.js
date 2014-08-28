@@ -20,7 +20,8 @@ module.exports = function(app) {
 
 		locations.forEach(function(location) {
 			// Prepare a string version, to keep Yelp happy:
-			var stringLocation = location.lat + ',' + location.lng;
+			var stringLocation = location.lat + ',' + location.lon;
+
 			// Run each point through the Yelp API
 			yelpAPI.searchCoordinates(stringLocation, options, function(err, data) {
 				if (!err) {
@@ -28,6 +29,7 @@ module.exports = function(app) {
 				} else {
 					console.log('Error in the Yelp callback!');
 				}
+
 				// When we're done, return master array to be parsed by business collection
 				if (allBusinesses.length === locations.length) {
 					return res.status(200).send(allBusinesses);
