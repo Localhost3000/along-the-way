@@ -61,7 +61,10 @@ var InitView = Backbone.View.extend({
             routeIntervals.push(midpoint);
           }
         });
-				callback(routeIntervals);
+        // New: iterate over the route intervals here, not in the API
+        for (var i = 0; i < routeIntervals.length; i++) {
+					callback(routeIntervals[i]);
+        }
       }
     });
   },
@@ -76,10 +79,6 @@ var InitView = Backbone.View.extend({
 		var start = this.$el.closest('div').find('#start').val();
 		var destination = this.$el.closest('div').find('#destination').val();
 
-		// Override for testing
-		// start = '511 N Boren AVE Seattle, WA';
-		// destination = '2210 Westlake Ave Seattle WA';
-
 		// Pass data into the model (which is owned by the router, and globally visible)
 		this.model.set('start', start);
 		this.model.set('end', destination);
@@ -89,6 +88,11 @@ var InitView = Backbone.View.extend({
 			var BusinessCollection = require('../collections/business-collection');
 			var businessCollection = new BusinessCollection(start, {});
 			businessCollection.search(routeIntervals);
+
+			// New and temporary: track incoming businesses
+			businessCollection.on('add', function() {
+				console.log('Business added!');
+			});
 		});
 
 
