@@ -3,7 +3,7 @@
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
-var geocoder = new google.maps.Geocoder();
+
 
 module.exports = Backbone.View.extend({
   tagName: 'div',
@@ -14,6 +14,7 @@ module.exports = Backbone.View.extend({
     var mapOptions = {
       zoom: this.model.get('zoom'),
     };
+
     var map = new google.maps.Map(this.el, mapOptions);
 
     this.businesses.on('sync', this.createMarker(map), this);
@@ -45,6 +46,7 @@ module.exports = Backbone.View.extend({
   },
 
   createMarker: function(map){
+    var geocoder = new google.maps.Geocoder();
     this.businesses.forEach(function(business){
       geocoder.geocode( { 'address': business.get('address')},
         function(results, status) {

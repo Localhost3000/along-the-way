@@ -145,4 +145,6 @@ module.exports = function(grunt) {
 		// 'open',
 		'watch:all'
 	]);
+
+	grunt.registerTask('test', ['browserify:backbonetest', 'mocha:backbonetest']);
 };
