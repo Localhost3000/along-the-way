@@ -21,34 +21,77 @@ var InitView = Backbone.View.extend({
 		'click #search': 'search'
 	},
 
+	// Begin transplant
+  getDirections: function(callback){
+    var directionsService = new google.maps.DirectionsService();
+    // var directionsDisplay = new google.maps.DirectionsRenderer();
+    // directionsDisplay.setMap(map);
+
+    var request = {
+      origin: this.model.get('start'),
+      destination: this.model.get('end'),
+      travelMode: google.maps.DirectionsTravelMode.WALKING
+    };
+
+    directionsService.route(request, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK){
+        // directionsDisplay.setDirections(response);
+
+        // One leg for each waypoint
+        var legs = response.routes[0].legs[0];
+
+        // Array containing each separate step along a leg
+        var steps = legs.steps;
+
+        // Coordinates for Yelp searches
+        var routeIntervals = [];
+
+        steps.forEach(function(step) {
+
+          // Grab latitude and longitude from each starting point
+          routeIntervals.push({ lat: step.start_location.k, lon: step.start_location.B });
+
+          // If the distance between intervals is greater than 300 meters
+          // calculate and intermediate point
+          if(step.distance.value > 300) {
+            var lat = (step.start_location.k + step.end_location.k) / 2;
+            var lon = (step.start_location.B + step.end_location.B) / 2;
+            var midpoint = { lat: lat, lon: lon };
+
+            routeIntervals.push(midpoint);
+          }
+        });
+				callback(routeIntervals);
+      }
+    });
+  },
+
+	// End transplant
+
 	search: function(e) {
 		e.preventDefault(); // Otherwise the page will reload!
+		var routeIntervals;
 
 		// Grab start and destination from the form
 		var start = this.$el.closest('div').find('#start').val();
 		var destination = this.$el.closest('div').find('#destination').val();
 
+		// Override for testing
+		// start = '511 N Boren AVE Seattle, WA';
+		// destination = '2210 Westlake Ave Seattle WA';
+
 		// Pass data into the model (which is owned by the router, and globally visible)
 		this.model.set('start', start);
 		this.model.set('end', destination);
-		console.log('After change, in the model: ' + this.model.get('start'));
 
-		// To do: add Google API call that gets route midpoints
-		var BusinessCollection = require('../collections/business-collection');
+		// Please work!
+		this.getDirections(function(array) {
+			routeIntervals = array;
+			var BusinessCollection = require('../collections/business-collection');
+			var businessCollection = new BusinessCollection(start, {});
+			businessCollection.search(routeIntervals);
+		});
 
-		// Note that "start" is now unnecessary here; we might still want to pass in
-		// the options object on init, though:
-		var businessCollection = new BusinessCollection(start, {});
-
-		// This replaces businessCollection.fetch() for now
-		businessCollection.search(
-		[
-			{"lat":47.6228484,"lng":-122.335816},
-			{"lat":47.622604,"lng":-122.3371348},
-			{"lat":47.6185347,"lng":-122.3371732},
-			{"lat":47.6185383,"lng":-122.3384741},
-			{"lat":47.61834,"lng":-122.3384572}
-		]);
 
 		// Finally, hit up the next view:
 		Backbone.history.navigate('#map', {
