@@ -85,8 +85,7 @@ var InitView = Backbone.View.extend({
 		this.model.set('end', destination);
 
 		// Please work!
-		this.getDirections(function(array) {
-			routeIntervals = array;
+		this.getDirections(function(routeIntervals) {
 			var BusinessCollection = require('../collections/business-collection');
 			var businessCollection = new BusinessCollection(start, {});
 			businessCollection.search(routeIntervals);
