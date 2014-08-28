@@ -4,10 +4,27 @@ height: 100px;
 font-size: 2em;
 border: 1px solid #dedede;
 margin-top: 76px;
-margin-left: 130px;
+//margin-left: 130px;
 cursor: pointer;
+display: inline-block;
 }
 
 #search:hover {
+  background-color: rgba(255,140,0,1.00);
+}
+
+
+#driving {
+width: 200px;
+height: 100px;
+font-size: 2em;
+border: 1px solid #dedede;
+margin-top: 76px;
+//margin-left: 130px;
+cursor: pointer;
+display: inline-block;
+}
+
+#driving:hover {
   background-color: rgba(255,140,0,1.00);
 }
