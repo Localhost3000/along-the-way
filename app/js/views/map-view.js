@@ -16,8 +16,16 @@ module.exports = Backbone.View.extend({
     };
 
     var map = new google.maps.Map(this.el, mapOptions);
+    this.map = map;
 
-    this.businesses.on('sync', this.createMarker(map), this);
+    // console.log(this.createMarker);
+
+    this.listenTo(this.businesses, 'add', this.createMarker);
+
+    // this.businesses.on('add', this.createMarker);
+    // this.businesses.on('add', function() {
+    //   console.log('Called!'); // Works!
+    // });
 
     this.getDirections(map);
     this.render();
@@ -45,14 +53,16 @@ module.exports = Backbone.View.extend({
     this.render();
   },
 
-  createMarker: function(map){
+  createMarker: function() {
+    // console.log('Called!');
+    var self = this;
     var geocoder = new google.maps.Geocoder();
     this.businesses.forEach(function(business){
       geocoder.geocode( { 'address': business.get('address')},
         function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
             var marker = new google.maps.Marker({
-              map: map,
+              map: self.map,
               position: results[0].geometry.location
             });
           } else {

@@ -6,8 +6,9 @@ Backbone.$ = $;
 
 var InitView = Backbone.View.extend({
 	tagName: 'div',
-	initialize: function() {
+	initialize: function(options) {
 	  this.render();
+    this.collection = options.collection;
     var self = this;
     // Try HTML5 geolocation
     if(navigator.geolocation) {
@@ -41,13 +42,17 @@ var InitView = Backbone.View.extend({
     // var directionsDisplay = new google.maps.DirectionsRenderer();
     // directionsDisplay.setMap(map);
 
+    var myTravelMode = this.model.get('travelMode') === "WALKING" ?
+    myTravelMode = google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING;
+
     var request = {
       origin: this.model.get('start'),
       destination: this.model.get('end'),
-      travelMode: google.maps.DirectionsTravelMode.WALKING
+      travelMode: myTravelMode
     };
 
     directionsService.route(request, function(response, status) {
+      console.log('response: ' + JSON.stringify(response));
       if (status === google.maps.DirectionsStatus.OK){
         // directionsDisplay.setDirections(response);
 
@@ -60,7 +65,11 @@ var InitView = Backbone.View.extend({
         // Coordinates for Yelp searches
         var routeIntervals = [];
 
+        console.log('Number of steps: ' + steps);
+
         steps.forEach(function(step) {
+
+          // console.log('step: ' + step);
 
           // Grab latitude and longitude from each starting point
           routeIntervals.push({ lat: step.start_location.k, lon: step.start_location.B });
@@ -68,6 +77,7 @@ var InitView = Backbone.View.extend({
           // If the distance between intervals is greater than 300 meters
           // calculate and intermediate point
           if(step.distance.value > 300) {
+            console.log('Calculating midpoint!');
             var lat = (step.start_location.k + step.end_location.k) / 2;
             var lon = (step.start_location.B + step.end_location.B) / 2;
             var midpoint = { lat: lat, lon: lon };
@@ -76,8 +86,11 @@ var InitView = Backbone.View.extend({
           }
         });
         // New: iterate over the route intervals here, not in the API
+
         for (var i = 0; i < routeIntervals.length; i++) {
-					callback(routeIntervals[i]);
+					console.log('# of times the search callback fires: ' + (i + 1));
+          console.log('val of current interval: ' + routeIntervals[i]);
+          callback(routeIntervals[i]);
         }
       }
     });
@@ -86,7 +99,8 @@ var InitView = Backbone.View.extend({
 	// End transplant
 
 	search: function(e) {
-		e.preventDefault(); // Otherwise the page will reload!
+		var self = this;
+    e.preventDefault(); // Otherwise the page will reload!
 		var routeIntervals;
 
 		// Grab start and destination from the form
@@ -99,16 +113,14 @@ var InitView = Backbone.View.extend({
 		this.model.set('start', start);
 		this.model.set('end', destination);
 
-		// Please work!
+		// Fire off the Yelp request
 		this.getDirections(function(routeIntervals) {
-			var BusinessCollection = require('../collections/business-collection');
-			var businessCollection = new BusinessCollection(start, {});
-			businessCollection.search(routeIntervals);
+			self.collection.search(routeIntervals);
 
 			// New and temporary: track incoming businesses
-			businessCollection.on('add', function() {
-				console.log('Business added!');
-			});
+			// self.collection.on('add', function() {
+			// 	console.log('Business added!');
+			// });
 		});
 
 

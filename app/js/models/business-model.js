@@ -5,6 +5,7 @@ var BusinessModel = Backbone.Model.extend({
 	idAttribute: 'id',
 	parse: function(data) {
     var hash = {};
+    // console.log(data.name + ' | ' + data.location.city);
 
     hash.name = data.name;
     hash.id = data.id;

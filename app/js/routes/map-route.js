@@ -15,6 +15,6 @@ var markers = new Markers([
 
 module.exports = function() {
 	var MapView = require('../views/map-view');
-	var mapView = new MapView({model: this.mapModel, businesses: markers});
+	var mapView = new MapView({model: this.mapModel, businesses: this.collection });
   $('#backbone').html(mapView.el);
 };

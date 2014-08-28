@@ -23,8 +23,8 @@ module.exports = Backbone.Collection.extend({
 	},
 
 	initialize: function(location, params) {
-		this.location = location; // No longer necessary, b/c overwritten on search
-		this.params = params; // Eventually necessary?
+		this.location = location || {}; // No longer necessary, b/c overwritten on search
+		this.params = params || {}; // Eventually necessary?
 	},
 
 	parse: function(response) {
