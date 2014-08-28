@@ -4,6 +4,8 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
 
+var uniqueID = {};
+
 var _ = require('../../bower_components/underscore');
 
 var BusinessModel = require('../models/business-model');
@@ -26,26 +28,22 @@ module.exports = Backbone.Collection.extend({
 	},
 
 	parse: function(response) {
-		/* The data comes in as an array of objects (one for each lat/long point),
-		each of which has a "businesses" attribute that holds an array of businesses.
-		We parse the businesses out of each object and return a master businesses array.
-		*/
+
 		var allBusinesses = [];
-		for (var i = 0; i < response.length; i++) {
-			var innerArray = JSON.parse(response[i]).businesses;
-			for (var j = 0; j < innerArray.length; j++) {
-				allBusinesses.push(innerArray[j]);
-			}
-		}
-		// Filter out duplicate businesses with Underscore
-		allBusinesses = _.uniq(allBusinesses, function(business) {
-			return business.id;
+
+		var businesses = JSON.parse(response).businesses;
+
+		businesses.forEach(function(business) {
+			if (uniqueID[business.id]) { return; }
+			uniqueID[business.id] = true;
+			allBusinesses.push(business);
 		});
+
 		return allBusinesses;
 	},
 
-	search: function(latLongArray) {
-		this.location = latLongArray;
+	search: function(latLong) {
+		this.location = latLong;
 		this.fetch();
 	}
 });
