@@ -9,7 +9,8 @@ module.exports = Backbone.Model.extend({
   defaults:{
     zoom: 10,
     start: '511 Boren Ave N Seattle, WA',
-    end: '2210 Westlake Ave Seattle, WA'
+    end: '2210 Westlake Ave Seattle, WA',
+    travelMode: 'WALKING'
   }
 
   
