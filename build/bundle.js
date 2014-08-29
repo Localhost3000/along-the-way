@@ -12186,6 +12186,7 @@ module.exports = Backbone.Collection.extend({
 	},
 
 	initialize: function(params) {
+		this.locations = {};
 		this.params = params || {radius_filter: 500};
 	},
 
@@ -12233,6 +12234,7 @@ module.exports = Backbone.Collection.extend({
 		this.fetch();
 	}
 });
+
 },{"../../bower_components/underscore":3,"../models/business-model":8,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],6:[function(require,module,exports){
 "use strict";
 
@@ -12355,7 +12357,7 @@ var MapModel = require('../models/map-model');
 module.exports = function() {
 	this.mapModel = new MapModel();
 	this.collection = new BusinessCollection({
-		radius_filter: 100
+		radius_filter: 20
 	});
 
 	var InitView = require('../views/init-view');
@@ -12514,9 +12516,14 @@ var InitView = Backbone.View.extend({
       navigator.geolocation.getCurrentPosition(function(position) {
         var myLatlng = new google.maps.LatLng(position.coords.latitude,
           position.coords.longitude);
+
+        // Dirty hack to create a short route if no destination is entered
+        var endLatlng = new google.maps.LatLng(position.coords.latitude - 0.00001,
+          position.coords.longitude - 0.00001);
+
         self.getAddress(myLatlng);
         self.model.set("start", myLatlng);
-        self.model.set("end", myLatlng);
+        self.model.set("end", endLatlng);
        }, function() { console.log('success'); });
     } else {
     // Browser doesn't support Geolocation
@@ -12584,11 +12591,6 @@ var InitView = Backbone.View.extend({
     e.preventDefault(); // Otherwise the page will reload!
 		var self = this;
 
-    if (this.$el.closest('div').find('#destination').val() === '') {
-      alert('Enter a destination!');
-      return false;
-    }
-
     // Grab start and destination from the form
     var start = this.$el.closest('div').find('#start').val() === '' ?
     this.model.get('start') : this.$el.closest('div').find('#start').val();
@@ -12627,6 +12629,7 @@ var InitView = Backbone.View.extend({
 });
 
 module.exports = InitView;
+
 },{"../templates/init-template.hbs":17,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],21:[function(require,module,exports){
 "use strict";
 
@@ -12684,32 +12687,33 @@ module.exports = Backbone.View.extend({
     delay = 100,
     successCounter = 0;
 
+    var addMarker = function(position, name) {
+      var marker = new google.maps.Marker({
+        map: self.map,
+        position: position,
+        title: name
+      });
+    };
+
     function recurse() {
       var highlight = self.businesses.models[i].get('name');
 
       if (self.businesses.models[i].attributes.coordinates) {
+
         // Yelp available
-        var marker = new google.maps.Marker({
-          map: self.map,
-          position: self.businesses.models[i].attributes.coordinates,
-          title: highlight
-        });
+        addMarker(self.businesses.models[i].attributes.coordinates, highlight);
         if (i++ < self.businesses.length - 1) {
           setTimeout(recurse, delay);
         }
       } else {
+
         // Geocoder :(
         geocoder.geocode({
           'address': self.businesses.models[i].attributes.address
         }, function(results, status) {
           try {
             if (status === google.maps.GeocoderStatus.OK) {
-              // console.log('success!');
-              var marker = new google.maps.Marker({
-                map: self.map,
-                position: results[0].geometry.location,
-                title: highlight
-              });
+              addMarker(results[0].geometry.location, highlight);
               if (i++ < self.businesses.length - 1) {
                 setTimeout(recurse, delay);
               }
