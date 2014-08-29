@@ -132,7 +132,8 @@ module.exports = Backbone.View.extend({
             console.log('success!');
             var marker = new google.maps.Marker({
               map: self.map,
-              position: results[0].geometry.location,
+              position: self.businesses.models[i].location.coordinate ||
+                results[0].geometry.location,
               title: highlight
             });
             if (i++ < self.businesses.length - 1) {
