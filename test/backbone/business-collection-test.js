@@ -11,7 +11,7 @@ var BusinessCollection = require('../../app/js/collections/business-collection')
 describe('Business Collection', function() {
 
   // Sample response: http://www.yelp.com/developers/documentation/v2/search_api
-  var yelpResponse =
+  var yelpResponse = [
     {
       businesses: [
         {
@@ -40,7 +40,11 @@ describe('Business Collection', function() {
           rating: 1
         }
       ]
-    };
+    }
+  ];
+
+  var masterResponse = [];
+  masterResponse[0] = JSON.stringify(yelpResponse);
 
   before(function(done) {
     this.mock = sinon.mock(Backbone);
@@ -55,26 +59,27 @@ describe('Business Collection', function() {
     done();
   });
 
-  it('should have a location on creation', function(done) {
-    expect(this.businessCollection.location).to.exist;
-    done();
-  });
-
   it('should have params on creation', function(done) {
     expect(this.businessCollection.params).to.exist;
     done();
   });
 
+  it('should have a default search radius', function(done) {
+    console.log('COLLECTION PARAMS: ' + JSON.stringify(this.businessCollection.params));
+    expect(this.businessCollection.params.radius_filter).to.be.a('number');
+    done();
+  });
+
+  // it('should be able to parse a Yelp search response', function(done) {
+  //   var results = this.businessCollection.parse(masterResponse);
+  //   expect(results.length).to.equal(1);
+  //   done();
+  // });
+
   it('should hit the Yelp endpoint on search', function(done) {
     var url = this.businessCollection.url();
     this.mock.expects('ajax').withArgs(sinon.match({type: 'GET', url: url}));
     this.businessCollection.search({});
-    done();
-  });
-
-  it('should be able to parse a Yelp search response', function(done) {
-    var results = this.businessCollection.parse(JSON.stringify(yelpResponse));
-    expect(results.length).to.equal(1);
     done();
   });
 
