@@ -3,6 +3,7 @@
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
+var async = require('async');
 
 
 module.exports = Backbone.View.extend({
@@ -20,7 +21,7 @@ module.exports = Backbone.View.extend({
 
     // console.log(this.createMarker);
 
-    this.listenTo(this.businesses, 'add', this.createMarker);
+    this.businesses.on('sync', this.createMarker, this);
 
     // this.businesses.on('add', this.createMarker);
     // this.businesses.on('add', function() {
@@ -56,8 +57,12 @@ module.exports = Backbone.View.extend({
   createMarker: function() {
     // console.log('Called!');
     var self = this;
+    var models = [];
+    this.businesses.forEach(function(item){
+      models.push(item);
+    });
     var geocoder = new google.maps.Geocoder();
-    this.businesses.forEach(function(business){
+    async.eachSeries(models, function(business, callback){
       geocoder.geocode( { 'address': business.get('address')},
         function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
@@ -65,10 +70,14 @@ module.exports = Backbone.View.extend({
               map: self.map,
               position: results[0].geometry.location
             });
+            callback();
           } else {
             console.log("Geocode was not successful for the following reason: " + status);
+            callback("bad stuff");
           }
         });
+    }, function(err){
+      if(err) return err;
     });
     this.render();
   },
