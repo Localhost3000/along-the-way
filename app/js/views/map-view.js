@@ -121,17 +121,19 @@ module.exports = Backbone.View.extend({
      * Begin normal version
      */
 
-      delay = 500; // <= Play with this
+      delay = 200; // <= Play with this
 
       geocoder.geocode({
         'address': self.businesses.models[i].attributes.address
       }, function(results, status) {
+        var highlight = self.businesses.models[i].get('name');
         try {
           if (status === google.maps.GeocoderStatus.OK) {
             console.log('success!');
             var marker = new google.maps.Marker({
               map: self.map,
-              position: results[0].geometry.location
+              position: results[0].geometry.location,
+              title: highlight
             });
             if (i++ < self.businesses.length - 1) {
               setTimeout(recurse, delay);
@@ -157,7 +159,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
-    $('#backbone').replaceWith(this.$el);
+    $('#map-canvas').replaceWith(this.$el);
     return this;
   }
 });
