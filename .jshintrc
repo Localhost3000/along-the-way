@@ -12,6 +12,7 @@
     "after"      : false,
     "afterEach"  : false,
     /* MAPS */
+    "alert"      : false,
     "google"     : false
   }
 }

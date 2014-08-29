@@ -13,9 +13,10 @@ module.exports = function(grunt) {
 		jshint: {
 			files: [
 				'app/js/**/*.js',
-				'routes.js',
+				'expressRoutes.js',
 				'server.js',
-				'test/**/*.js'
+				'test/**/*.js',
+				'lib/*.js'
 			],
 		options: {
 				'jshintrc': true
@@ -105,7 +106,8 @@ module.exports = function(grunt) {
 					'app/index.html',
 					'app/styles/**/*.scss',
 					'server.js',
-					'routes.js'
+					'expressRoutes.js',
+					'lib/*.js'
 				],
 				tasks: [
 					// 'clean:test',
@@ -145,4 +147,6 @@ module.exports = function(grunt) {
 		// 'open',
 		'watch:all'
 	]);
+
+	grunt.registerTask('test', ['browserify:backbonetest', 'mocha:backbonetest']);
 };

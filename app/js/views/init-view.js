@@ -6,12 +6,26 @@ Backbone.$ = $;
 
 var InitView = Backbone.View.extend({
 	tagName: 'div',
-	initialize: function() {
-		this.render();
-	},
+	initialize: function(options) {
+	  this.render();
+    this.collection = options.collection;
+    var self = this;
+    // Try HTML5 geolocation
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var myLatlng = new google.maps.LatLng(position.coords.latitude,
+          position.coords.longitude);
+        self.getAddress(myLatlng);
+        self.model.set("start", myLatlng);
+        self.model.set("end", myLatlng);
+       }, function() { console.log('success'); });
+    } else {
+    // Browser doesn't support Geolocation
+      console.log('boooooo');
+    }
+  },
 
 	render: function() {
-		// Add logic for setting current location as default?
 		var template = require('../templates/init-template.hbs');
 		this.$el.html(template());
 		return this;
@@ -21,21 +35,21 @@ var InitView = Backbone.View.extend({
 		'click #search': 'search'
 	},
 
-	// Begin transplant
   getDirections: function(callback){
+    var self = this;
     var directionsService = new google.maps.DirectionsService();
-    // var directionsDisplay = new google.maps.DirectionsRenderer();
-    // directionsDisplay.setMap(map);
+
+    var myTravelMode = this.model.get('travelMode') === "WALKING" ?
+      myTravelMode = google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING;
 
     var request = {
       origin: this.model.get('start'),
       destination: this.model.get('end'),
-      travelMode: google.maps.DirectionsTravelMode.WALKING
+      travelMode: myTravelMode
     };
 
     directionsService.route(request, function(response, status) {
       if (status === google.maps.DirectionsStatus.OK){
-        // directionsDisplay.setDirections(response);
 
         // One leg for each waypoint
         var legs = response.routes[0].legs[0];
@@ -51,8 +65,8 @@ var InitView = Backbone.View.extend({
           // Grab latitude and longitude from each starting point
           routeIntervals.push({ lat: step.start_location.k, lon: step.start_location.B });
 
-          // If the distance between intervals is greater than 300 meters
-          // calculate and intermediate point
+          // If the distance between intervals is greater than 300 meters,
+          // calculate an intermediate point
           if(step.distance.value > 300) {
             var lat = (step.start_location.k + step.end_location.k) / 2;
             var lon = (step.start_location.B + step.end_location.B) / 2;
@@ -61,42 +75,56 @@ var InitView = Backbone.View.extend({
             routeIntervals.push(midpoint);
           }
         });
-				callback(routeIntervals);
+
+        callback(routeIntervals);
       }
     });
   },
 
-	// End transplant
-
 	search: function(e) {
-		e.preventDefault(); // Otherwise the page will reload!
-		var routeIntervals;
+    e.preventDefault(); // Otherwise the page will reload!
+		var self = this;
 
-		// Grab start and destination from the form
-		var start = this.$el.closest('div').find('#start').val();
-		var destination = this.$el.closest('div').find('#destination').val();
+    if (this.$el.closest('div').find('#destination').val() === '') {
+      alert('Enter a destination!');
+      return false;
+    }
 
-		// Override for testing
-		// start = '511 N Boren AVE Seattle, WA';
-		// destination = '2210 Westlake Ave Seattle WA';
+    // Grab start and destination from the form
+    var start = this.$el.closest('div').find('#start').val() === '' ?
+    this.model.get('start') : this.$el.closest('div').find('#start').val();
+    var destination = this.$el.closest('div').find('#destination').val() === '' ?
+    this.model.get('end') : this.$el.closest('div').find('#destination').val();
 
 		// Pass data into the model (which is owned by the router, and globally visible)
 		this.model.set('start', start);
 		this.model.set('end', destination);
 
-		// Please work!
-		this.getDirections(function(routeIntervals) {
-			var BusinessCollection = require('../collections/business-collection');
-			var businessCollection = new BusinessCollection(start, {});
-			businessCollection.search(routeIntervals);
+		// Fire off the Yelp request
+    this.getDirections(function(routeIntervals) {
+			self.collection.search(routeIntervals);
 		});
-
 
 		// Finally, hit up the next view:
 		Backbone.history.navigate('#map', {
 			trigger: true
 		});
-	}
+	},
+
+  getAddress: function(latlng){
+    var self = this;
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'latLng': latlng}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        if (results[1]) {
+          var address = (results[1].formatted_address);
+          self.$el.closest('div').find('#start').val(address);
+        }
+      } else {
+        console.log('Geocoder failed due to: ' + status);
+      }
+    });
+  }
 });
 
 module.exports = InitView;

@@ -5,47 +5,58 @@ var $ = require('jquery');
 Backbone.$ = $;
 
 var _ = require('../../bower_components/underscore');
-
 var BusinessModel = require('../models/business-model');
+
+var uniqueID = {};
 
 module.exports = Backbone.Collection.extend({
 
 	model: BusinessModel,
 
-	url: function(location, params) {
+	url: function() {
 		var URLstring = 'api/0_0_1/' +
-			JSON.stringify(this.location) +
+			JSON.stringify(this.locations) +
 			'/' +
 			JSON.stringify(this.params);
 		return URLstring;
 	},
 
-	initialize: function(location, params) {
-		this.location = location; // No longer necessary, b/c overwritten on search
-		this.params = params; // Eventually necessary?
+	initialize: function(params) {
+		this.params = params || {radius_filter: 500};
 	},
 
 	parse: function(response) {
-		/* The data comes in as an array of objects (one for each lat/long point),
-		each of which has a "businesses" attribute that holds an array of businesses.
-		We parse the businesses out of each object and return a master businesses array.
-		*/
+
+		var self = this;
 		var allBusinesses = [];
-		for (var i = 0; i < response.length; i++) {
-			var innerArray = JSON.parse(response[i]).businesses;
-			for (var j = 0; j < innerArray.length; j++) {
-				allBusinesses.push(innerArray[j]);
-			}
-		}
-		// Filter out duplicate businesses with Underscore
-		allBusinesses = _.uniq(allBusinesses, function(business) {
-			return business.id;
+
+		response.forEach(function(location) {
+			var businesses = JSON.parse(location).businesses;
+			businesses.forEach(function(business) {
+				// Verbose checking for now, but we could combine these two:
+				if (uniqueID[business.id]) {
+					console.log('Duplicate business! ' + business.name);
+					return;
+				}
+				if (business.distance > self.params.radius_filter) {
+					console.log('Yelp distance error! ' + business.name +
+						' is ' +
+						business.distance +
+						' off route, which is more than the max of ' +
+						self.params.radius_filter);
+					return;
+				}
+				uniqueID[business.id] = true;
+				allBusinesses.push(business);
+			});
 		});
+
+		console.log('Number of businesses in collection: ' + allBusinesses.length);
 		return allBusinesses;
 	},
 
-	search: function(latLongArray) {
-		this.location = latLongArray;
+	search: function(latLong) {
+		this.locations = latLong;
 		this.fetch();
 	}
 });
