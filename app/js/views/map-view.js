@@ -121,7 +121,7 @@ module.exports = Backbone.View.extend({
      * Begin normal version
      */
 
-      delay = 500; // <= Play with this
+      delay = 200; // <= Play with this
 
       geocoder.geocode({
         'address': self.businesses.models[i].attributes.address
