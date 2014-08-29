@@ -18,6 +18,7 @@ module.exports = Backbone.Collection.extend({
 			JSON.stringify(this.locations) +
 			'/' +
 			JSON.stringify(this.params);
+		console.log(URLstring);
 		return URLstring;
 	},
 
