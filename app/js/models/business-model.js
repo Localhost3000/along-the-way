@@ -4,20 +4,26 @@ var Backbone = require('backbone');
 var BusinessModel = Backbone.Model.extend({
 	idAttribute: 'id',
 	parse: function(data) {
-    var hash = {};
-    // console.log(data.name + ' | ' + data.location.city);
+        console.log('data coming into model: ' +
+            data.name +
+            ' | ' +
+            data.location.display_address +
+            ' | distance: ' +
+            data.distance);
 
-    hash.name = data.name;
-    hash.id = data.id;
-    hash.address = data.location.display_address.join(' ');
-    hash.rating = data.rating;
+        var hash = {};
+        hash.name = data.name;
+        hash.id = data.id;
+        hash.address = data.location.display_address.join(' ');
+        hash.rating = data.rating;
 
-    if (data.categories && data.categories !== 'undefined') {
-    	hash.specificCategory = data.categories[0][0];
-    } else {
-    	hash.specificCategory = '';
-    }
-    return hash;
-	},
+        if (data.categories && data.categories !== 'undefined') {
+        	hash.specificCategory = data.categories[0][0];
+        } else {
+        	hash.specificCategory = '';
+        }
+        return hash;
+	}
 });
+
 module.exports = BusinessModel;
