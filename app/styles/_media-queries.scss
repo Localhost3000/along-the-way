@@ -1,0 +1,30 @@
+@media (max-width: 400px) {
+
+  header {
+    background-color: #c41200;
+  }
+
+  section {
+    margin-top: 60px;
+    width: 540px;
+  }
+
+  input {
+    width: 300px;
+    font-size: 0.9em;
+  }
+
+  #search {
+    margin-left: 60px;
+  }
+
+  footer p {
+    color: #c41200;
+  }
+
+  #map-canvas {
+    width: 400px;
+    height: 500px;
+    margin-top: 100px;
+  }
+}
