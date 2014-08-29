@@ -10,7 +10,7 @@ var MapModel = require('../models/map-model');
 module.exports = function() {
 	this.mapModel = new MapModel();
 	this.collection = new BusinessCollection({
-		radius_filter: 500
+		radius_filter: 100
 	});
 
 	var InitView = require('../views/init-view');
