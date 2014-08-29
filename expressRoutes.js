@@ -11,28 +11,30 @@ var yelpAPI = new YelpAPI({
 
 module.exports = function(app) {
 
-	var api = '/api/0_0_1/:location/:options';
-
-	var counter = 0;
+	var api = '/api/0_0_1/:locations/:options';
 
 	app.get(api, function(req, res) {
-		// console.log(req.params.location);
-		var location = JSON.parse(req.params.location) || [{}];
-		var options = JSON.parse(req.params.options) || {"radius_filter": 400};
+		var locations = JSON.parse(req.params.locations) || [{}];
+		var options = JSON.parse(req.params.options) || {};
+		var allBusinesses = []; // (Will hold master list of businesses)
 
-		// Prepare a string version, to keep Yelp happy:
-		var stringLocation = location.lat + ',' + location.lon;
+		locations.forEach(function(location) {
+			// Prepare a string version, to keep Yelp happy:
+			var stringLocation = location.lat + ',' + location.lon;
 
-		// Run each point through the Yelp API
-		yelpAPI.searchCoordinates(stringLocation, options, function(err, data) {
-			if (!err) {
-				counter++;
-				console.log('numbers of locations registered in Yelp: ' + counter);
-				// console.log(JSON.stringify(data));
-				return res.status(200).send(JSON.stringify(data));
-			} else {
-				console.log('Error in the Yelp callback! ' + err);
-			}
+			// Run each point through the Yelp API
+			yelpAPI.searchCoordinates(stringLocation, options, function(err, data) {
+				if (!err) {
+					allBusinesses.push(data);
+				} else {
+					console.log('Error in the Yelp callback!');
+				}
+
+				// When we're done, return master array to be parsed by business collection
+				if (allBusinesses.length === locations.length) {
+					return res.status(200).send(allBusinesses);
+				}
+			});
 		});
 	});
 };

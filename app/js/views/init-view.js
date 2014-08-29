@@ -26,7 +26,6 @@ var InitView = Backbone.View.extend({
   },
 
 	render: function() {
-		// Add logic for setting current location as default?
 		var template = require('../templates/init-template.hbs');
 		this.$el.html(template());
 		return this;
@@ -36,14 +35,12 @@ var InitView = Backbone.View.extend({
 		'click #search': 'search'
 	},
 
-	// Begin transplant
   getDirections: function(callback){
+    var self = this;
     var directionsService = new google.maps.DirectionsService();
-    // var directionsDisplay = new google.maps.DirectionsRenderer();
-    // directionsDisplay.setMap(map);
 
     var myTravelMode = this.model.get('travelMode') === "WALKING" ?
-    myTravelMode = google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING;
+      myTravelMode = google.maps.TravelMode.WALKING : google.maps.TravelMode.DRIVING;
 
     var request = {
       origin: this.model.get('start'),
@@ -52,9 +49,7 @@ var InitView = Backbone.View.extend({
     };
 
     directionsService.route(request, function(response, status) {
-      console.log('response: ' + JSON.stringify(response));
       if (status === google.maps.DirectionsStatus.OK){
-        // directionsDisplay.setDirections(response);
 
         // One leg for each waypoint
         var legs = response.routes[0].legs[0];
@@ -65,19 +60,14 @@ var InitView = Backbone.View.extend({
         // Coordinates for Yelp searches
         var routeIntervals = [];
 
-        console.log('Number of steps: ' + steps);
-
         steps.forEach(function(step) {
-
-          // console.log('step: ' + step);
 
           // Grab latitude and longitude from each starting point
           routeIntervals.push({ lat: step.start_location.k, lon: step.start_location.B });
 
-          // If the distance between intervals is greater than 300 meters
-          // calculate and intermediate point
+          // If the distance between intervals is greater than 300 meters,
+          // calculate an intermediate point
           if(step.distance.value > 300) {
-            console.log('Calculating midpoint!');
             var lat = (step.start_location.k + step.end_location.k) / 2;
             var lon = (step.start_location.B + step.end_location.B) / 2;
             var midpoint = { lat: lat, lon: lon };
@@ -85,28 +75,25 @@ var InitView = Backbone.View.extend({
             routeIntervals.push(midpoint);
           }
         });
-        // New: iterate over the route intervals here, not in the API
 
-        for (var i = 0; i < routeIntervals.length; i++) {
-					console.log('# of times the search callback fires: ' + (i + 1));
-          console.log('val of current interval: ' + routeIntervals[i]);
-          callback(routeIntervals[i]);
-        }
+        callback(routeIntervals);
       }
     });
   },
 
-	// End transplant
-
 	search: function(e) {
-		var self = this;
     e.preventDefault(); // Otherwise the page will reload!
-		var routeIntervals;
+		var self = this;
 
-		// Grab start and destination from the form
-		var start = this.$el.closest('div').find('#start').val() === '' ?
+    if (this.$el.closest('div').find('#destination').val() === '') {
+      alert('Enter a destination!');
+      return false;
+    }
+
+    // Grab start and destination from the form
+    var start = this.$el.closest('div').find('#start').val() === '' ?
     this.model.get('start') : this.$el.closest('div').find('#start').val();
-		var destination = this.$el.closest('div').find('#destination').val() === '' ?
+    var destination = this.$el.closest('div').find('#destination').val() === '' ?
     this.model.get('end') : this.$el.closest('div').find('#destination').val();
 
 		// Pass data into the model (which is owned by the router, and globally visible)
@@ -114,15 +101,9 @@ var InitView = Backbone.View.extend({
 		this.model.set('end', destination);
 
 		// Fire off the Yelp request
-		this.getDirections(function(routeIntervals) {
+    this.getDirections(function(routeIntervals) {
 			self.collection.search(routeIntervals);
-
-			// New and temporary: track incoming businesses
-			// self.collection.on('add', function() {
-			// 	console.log('Business added!');
-			// });
 		});
-
 
 		// Finally, hit up the next view:
 		Backbone.history.navigate('#map', {
@@ -140,7 +121,7 @@ var InitView = Backbone.View.extend({
           self.$el.closest('div').find('#start').val(address);
         }
       } else {
-        console.log("Geocoder failed due to: " + status);
+        console.log('Geocoder failed due to: ' + status);
       }
     });
   }

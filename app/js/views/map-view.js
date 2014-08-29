@@ -18,7 +18,6 @@ module.exports = Backbone.View.extend({
 
     var map = new google.maps.Map(this.el, mapOptions);
     this.map = map;
-
     // console.log(this.createMarker);
 
     this.businesses.on('sync', this.createMarker, this);
@@ -33,6 +32,7 @@ module.exports = Backbone.View.extend({
   },
 
   getDirections: function(map){
+    var self = this;
     var directionsService = new google.maps.DirectionsService();
     var directionsDisplay = new google.maps.DirectionsRenderer();
     directionsDisplay.setMap(map);
@@ -49,9 +49,9 @@ module.exports = Backbone.View.extend({
     directionsService.route(request, function(response, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
-      }
+      } 
+      this.render();
     });
-    this.render();
   },
 
   createMarker: function() {
@@ -61,18 +61,20 @@ module.exports = Backbone.View.extend({
     this.businesses.forEach(function(item){
       models.push(item);
     });
-    var geocoder = new google.maps.Geocoder();
+    var service = new google.maps.PlacesService();
     async.eachSeries(models, function(business, callback){
-      geocoder.geocode( { 'address': business.get('address')},
-        function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
+      var request = {
+        location = 
+      }
+      service.radarSearch(request, function(results, status) {
+          if (status == google.maps.PlacesServiceStatus.OK) {
             var marker = new google.maps.Marker({
               map: self.map,
               position: results[0].geometry.location
             });
             callback();
           } else {
-            console.log("Geocode was not successful for the following reason: " + status);
+            console.log("Places status: " + status);
             callback("bad stuff");
           }
         });
