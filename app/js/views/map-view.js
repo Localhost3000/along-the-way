@@ -54,32 +54,33 @@ module.exports = Backbone.View.extend({
     delay = 100,
     successCounter = 0;
 
+    var addMarker = function(position, name) {
+      var marker = new google.maps.Marker({
+        map: self.map,
+        position: position,
+        title: name
+      });
+    };
+
     function recurse() {
       var highlight = self.businesses.models[i].get('name');
 
       if (self.businesses.models[i].attributes.coordinates) {
+
         // Yelp available
-        var marker = new google.maps.Marker({
-          map: self.map,
-          position: self.businesses.models[i].attributes.coordinates,
-          title: highlight
-        });
+        addMarker(self.businesses.models[i].attributes.coordinates, highlight);
         if (i++ < self.businesses.length - 1) {
           setTimeout(recurse, delay);
         }
       } else {
+
         // Geocoder :(
         geocoder.geocode({
           'address': self.businesses.models[i].attributes.address
         }, function(results, status) {
           try {
             if (status === google.maps.GeocoderStatus.OK) {
-              // console.log('success!');
-              var marker = new google.maps.Marker({
-                map: self.map,
-                position: results[0].geometry.location,
-                title: highlight
-              });
+              addMarker(results[0].geometry.location, highlight);
               if (i++ < self.businesses.length - 1) {
                 setTimeout(recurse, delay);
               }
