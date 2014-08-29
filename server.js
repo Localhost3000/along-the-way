@@ -14,6 +14,9 @@ app.use(express.static(__dirname + (process.env.STATIC_DIR || '/build')));
 require('./expressRoutes')(app);
 
 // Init
-var server = app.listen(process.env.PORT || 3000, function() {
+var port = process.env.PORT || 3000;
+var server = app.listen(port, function() {
     console.log('Lookin legit on port: %d', server.address().port);
 });
+
+exports.port = port;
