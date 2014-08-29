@@ -12181,12 +12181,10 @@ module.exports = Backbone.Collection.extend({
 			JSON.stringify(this.locations) +
 			'/' +
 			JSON.stringify(this.params);
-		// console.log(URLstring);
 		return URLstring;
 	},
 
 	initialize: function(params) {
-		this.locations = {};
 		this.params = params || {radius_filter: 500};
 	},
 
@@ -12194,38 +12192,21 @@ module.exports = Backbone.Collection.extend({
 
 		var self = this;
 		var allBusinesses = [];
-		// var coordinateTicker = 0;
 
 		response.forEach(function(location) {
 			var businesses = JSON.parse(location).businesses;
 			businesses.forEach(function(business) {
 				if (uniqueID[business.id]) {
-					// console.log('Duplicate business! ' + business.name);
 					return;
 				}
 				if (business.distance > self.params.radius_filter) {
-					// console.log('Yelp distance error! ' + business.name +
-					// 	' is ' +
-					// 	business.distance +
-					// 	' off route, which is more than the max of ' +
-					// 	self.params.radius_filter);
 					return;
 				}
-				// if (business.location.coordinate) {
-				// 	coordinateTicker++;
-				// 	console.log('This business has coordinates! ' +
-				// 		business.name + ' | ' +
-				// 		business.location.coordinate.latitude + ' | ' +
-				// 		business.location.coordinate.longitude + ' | ' +
-				// 		business.location.display_address);
-				// }
 				uniqueID[business.id] = true;
 				allBusinesses.push(business);
 			});
 		});
 
-		// console.log('Number of businesses in collection: ' + allBusinesses.length);
-		// console.log('Number of businesses with coordates: ' + coordinateTicker);
 		return allBusinesses;
 	},
 
@@ -12234,7 +12215,6 @@ module.exports = Backbone.Collection.extend({
 		this.fetch();
 	}
 });
-
 },{"../../bower_components/underscore":3,"../models/business-model":8,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],6:[function(require,module,exports){
 "use strict";
 
@@ -12271,13 +12251,6 @@ var Backbone = require("./../../bower_components/backbone/backbone.js");
 var BusinessModel = Backbone.Model.extend({
 	idAttribute: 'id',
 	parse: function(data) {
-        // console.log('data coming into model: ' +
-        //     data.name +
-        //     ' | ' +
-        //     data.location.display_address +
-        //     ' | distance: ' +
-        //     data.distance);
-
         var hash = {};
         hash.name = data.name;
         hash.id = data.id;
@@ -12285,7 +12258,6 @@ var BusinessModel = Backbone.Model.extend({
         hash.rating = data.rating;
 
         if (data.location.coordinate && data.location.coordinate !== 'undefined') {
-            // console.log('coordinates in model!');
             hash.coordinates = {
                 lat: data.location.coordinate.latitude,
                 lng: data.location.coordinate.longitude
