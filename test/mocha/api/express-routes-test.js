@@ -1,4 +1,5 @@
 'use strict';
+/* jshint expr: true */
 
 var chai = require('chai');
 var chaihttp = require('chai-http');
