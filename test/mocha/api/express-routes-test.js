@@ -13,11 +13,11 @@ describe('Yelp search route', function() {
 
   it('should be able to get', function(done) {
     chai.request('http://localhost:3000')
-      .get('/api/0_0_1/location' )
+      .get('/api/0_0_1/[{}]/{}' )
       .res(function(res) {
         expect(res).to.have.status(200);
+        done();
       });
-      done();
   });
 
 });
