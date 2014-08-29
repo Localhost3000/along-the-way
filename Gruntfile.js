@@ -15,7 +15,8 @@ module.exports = function(grunt) {
 				'app/js/**/*.js',
 				'expressRoutes.js',
 				'server.js',
-				'test/**/*.js'
+				'test/**/*.js',
+				'lib/*.js'
 			],
 		options: {
 				'jshintrc': true
@@ -105,7 +106,8 @@ module.exports = function(grunt) {
 					'app/index.html',
 					'app/styles/**/*.scss',
 					'server.js',
-					'expressRoutes.js'
+					'expressRoutes.js',
+					'lib/*.js'
 				],
 				tasks: [
 					// 'clean:test',
