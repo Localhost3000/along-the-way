@@ -68,7 +68,8 @@ module.exports = function(grunt) {
 			backbonetest: {
         src: ['test/test.html'],
         options: {
-          run: true
+          run: true,
+          reporter: 'Nyan'
         }
 			}
 		},
