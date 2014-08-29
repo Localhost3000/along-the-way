@@ -12181,7 +12181,7 @@ module.exports = Backbone.Collection.extend({
 			JSON.stringify(this.locations) +
 			'/' +
 			JSON.stringify(this.params);
-		console.log(URLstring);
+		// console.log(URLstring);
 		return URLstring;
 	},
 
@@ -12193,41 +12193,38 @@ module.exports = Backbone.Collection.extend({
 
 		var self = this;
 		var allBusinesses = [];
-		var coordinateTicker = 0;
-		// console.log('response: ' + JSON.stringify(response));
+		// var coordinateTicker = 0;
 
 		response.forEach(function(location) {
-			// console.log('location: ' + JSON.stringify(location));
 			var businesses = JSON.parse(location).businesses;
 			businesses.forEach(function(business) {
-				// Verbose checking for now, but we could combine these two:
 				if (uniqueID[business.id]) {
-					console.log('Duplicate business! ' + business.name);
+					// console.log('Duplicate business! ' + business.name);
 					return;
 				}
 				if (business.distance > self.params.radius_filter) {
-					console.log('Yelp distance error! ' + business.name +
-						' is ' +
-						business.distance +
-						' off route, which is more than the max of ' +
-						self.params.radius_filter);
+					// console.log('Yelp distance error! ' + business.name +
+					// 	' is ' +
+					// 	business.distance +
+					// 	' off route, which is more than the max of ' +
+					// 	self.params.radius_filter);
 					return;
 				}
-				if (business.location.coordinate) {
-					coordinateTicker++;
-					console.log('This business has coordinates! ' +
-						business.name + ' | ' +
-						business.location.coordinate.latitude + ' | ' +
-						business.location.coordinate.longitude + ' | ' +
-						business.location.display_address);
-				}
+				// if (business.location.coordinate) {
+				// 	coordinateTicker++;
+				// 	console.log('This business has coordinates! ' +
+				// 		business.name + ' | ' +
+				// 		business.location.coordinate.latitude + ' | ' +
+				// 		business.location.coordinate.longitude + ' | ' +
+				// 		business.location.display_address);
+				// }
 				uniqueID[business.id] = true;
 				allBusinesses.push(business);
 			});
 		});
 
-		console.log('Number of businesses in collection: ' + allBusinesses.length);
-		console.log('Number of businesses with coordates: ' + coordinateTicker);
+		// console.log('Number of businesses in collection: ' + allBusinesses.length);
+		// console.log('Number of businesses with coordates: ' + coordinateTicker);
 		return allBusinesses;
 	},
 
@@ -12272,18 +12269,26 @@ var Backbone = require("./../../bower_components/backbone/backbone.js");
 var BusinessModel = Backbone.Model.extend({
 	idAttribute: 'id',
 	parse: function(data) {
-        console.log('data coming into model: ' +
-            data.name +
-            ' | ' +
-            data.location.display_address +
-            ' | distance: ' +
-            data.distance);
+        // console.log('data coming into model: ' +
+        //     data.name +
+        //     ' | ' +
+        //     data.location.display_address +
+        //     ' | distance: ' +
+        //     data.distance);
 
         var hash = {};
         hash.name = data.name;
         hash.id = data.id;
         hash.address = data.location.display_address.join(' ');
         hash.rating = data.rating;
+
+        if (data.location.coordinate && data.location.coordinate !== 'undefined') {
+            // console.log('coordinates in model!');
+            hash.coordinates = {
+                lat: data.location.coordinate.latitude,
+                lng: data.location.coordinate.longitude
+            };
+        }
 
         if (data.categories && data.categories !== 'undefined') {
         	hash.specificCategory = data.categories[0][0];
@@ -12432,7 +12437,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<form class=\"init\">\n	<label>Start:</label>\n	<input name=\"start\" id=\"start\" placeholder=\"Will be populated automatically\">\n	<label>Destination:</label>\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n	<a href=\"#map\">\n		<input type=\"submit\" id=\"search\" value=\"Go!\">\n	</a>\n</form>\n";
+  return "<form class=\"init\">\n	<label>Start:</label>\n	<input name=\"start\" id=\"start\" placeholder=\"Will be populated automatically\">\n	<label>Destination:</label>\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n<a href=\"#map\"><input type=\"submit\" id=\"search\" value=\"GO\"/></a>\n</form>\n";
   });
 
 },{"hbsify":43}],18:[function(require,module,exports){
@@ -12676,107 +12681,49 @@ module.exports = Backbone.View.extend({
     var self = this;
     var geocoder = new google.maps.Geocoder();
     var i = 0,
-    delay = 200,
+    delay = 100,
     successCounter = 0;
 
     function recurse() {
-      console.log('i: ' + i);
-      console.log('Current speed: ' + delay);
+      var highlight = self.businesses.models[i].get('name');
 
-      /**
-       * Trial version
-       *==============
-       *
-       *
-       * Comment it back in (and the traditional one out) if you want to compare!
-       *
-       * This version attempts to regulate its own timeout intervals
-       *
-       * Otherwise, we need to run at, like, 400 to 600 ms minimum :(
-       */
-
-
-    //   geocoder.geocode({
-    //     'address': self.businesses.models[i].attributes.address
-    //   }, function(results, status) {
-
-    //     // Move the Geocoder attempt into a try/catch block
-    //     try {
-
-    //       if (status === google.maps.GeocoderStatus.OK) {
-    //         console.log('success!');
-    //         successCounter++;
-    //         var marker = new google.maps.Marker({
-    //           map: self.map,
-    //           position: results[0].geometry.location
-    //         });
-
-    //         // If we're successful, increment i and call recurse again
-    //         if (i++ < self.businesses.length - 1) {
-    //           // Successful more than 3 times in a row? Speed up a little
-    //           if (successCounter > 3) {
-    //             delay = (delay > 50 ? delay - 50 : 0);
-    //           }
-    //           setTimeout(recurse, delay); // Call self
-    //         }
-
-    //       // Error from Google? Throw an exception...
-    //       } else {
-    //         throw status;
-    //       }
-    //     }
-
-    //     // ... and catch it here
-    //     catch(err) {
-    //       console.log(err);
-    //       successCounter = 0; // duh
-    //       delay = delay + 100; // Slow down execution (twice as aggressively as we ever speed it up)
-    //       setTimeout(recurse, delay); // Call self
-    //     }
-    //   });
-    // }
-
-
-    /**
-     * End self-regulating version
-     */
-
-
-    /**
-     * Begin normal version
-     */
-
-      delay = 200; // <= Play with this
-
-      geocoder.geocode({
-        'address': self.businesses.models[i].attributes.address
-      }, function(results, status) {
-        var highlight = self.businesses.models[i].get('name');
-        try {
-          if (status === google.maps.GeocoderStatus.OK) {
-            console.log('success!');
-            var marker = new google.maps.Marker({
-              map: self.map,
-              position: results[0].geometry.location,
-              title: highlight
-            });
-            if (i++ < self.businesses.length - 1) {
-              setTimeout(recurse, delay);
-            }
-          } else {
-            throw status;
-          }
-        }
-        catch(err) {
-          console.log(err);
+      if (self.businesses.models[i].attributes.coordinates) {
+        // Yelp available
+        var marker = new google.maps.Marker({
+          map: self.map,
+          position: self.businesses.models[i].attributes.coordinates,
+          title: highlight
+        });
+        if (i++ < self.businesses.length - 1) {
           setTimeout(recurse, delay);
         }
-      });
+      } else {
+        // Geocoder :(
+        geocoder.geocode({
+          'address': self.businesses.models[i].attributes.address
+        }, function(results, status) {
+          try {
+            if (status === google.maps.GeocoderStatus.OK) {
+              // console.log('success!');
+              var marker = new google.maps.Marker({
+                map: self.map,
+                position: results[0].geometry.location,
+                title: highlight
+              });
+              if (i++ < self.businesses.length - 1) {
+                setTimeout(recurse, delay);
+              }
+            } else {
+              throw status;
+            }
+          }
+          catch(err) {
+            // console.log(err);
+            setTimeout(recurse, delay);
+          }
+        });
+      }
     }
-
-    /**
-     * End old-fashioned version
-     */
 
     recurse(); // Kick off the function for the first time
     this.render();
