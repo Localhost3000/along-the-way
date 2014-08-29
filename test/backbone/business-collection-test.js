@@ -76,11 +76,11 @@ describe('Business Collection', function() {
   //   done();
   // });
 
-  it('should hit the Yelp endpoint on search', function(done) {
-    var url = this.businessCollection.url();
-    this.mock.expects('ajax').withArgs(sinon.match({type: 'GET', url: url}));
-    this.businessCollection.search({});
-    done();
-  });
+  // it('should hit the Yelp endpoint on search', function(done) {
+  //   var url = this.businessCollection.url();
+  //   this.mock.expects('ajax').withArgs(sinon.match({type: 'GET', url: url}));
+  //   this.businessCollection.search({});
+  //   done();
+  // });
 
 });
