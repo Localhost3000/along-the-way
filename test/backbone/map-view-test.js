@@ -18,6 +18,8 @@ describe('Backbone Map View', function() {
     sinon.spy(MapView.prototype, 'createMarker');
 
     this.collection = new BusinessCollection();
+    this.collection.add(Backbone.Model.extend({}));
+
     this.mapModel = new MapModel();
     this.mapView = new MapView({ model: this.mapModel, businesses: this.collection} );
     done();

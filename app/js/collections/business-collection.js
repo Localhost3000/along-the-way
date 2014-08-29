@@ -23,6 +23,7 @@ module.exports = Backbone.Collection.extend({
 	},
 
 	initialize: function(params) {
+		this.locations = {};
 		this.params = params || {radius_filter: 500};
 	},
 
