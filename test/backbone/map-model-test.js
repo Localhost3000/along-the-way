@@ -21,12 +21,22 @@ describe('Map Model', function() {
     done();
   });
 
+  it('Should have a zoom attribute', function(done) {
+    expect(map.attributes).to.have.property('end');
+    done();
+  });
+
   it('Should have a start attribute', function(done) {
     expect(map.attributes).to.have.property('start');
     done();
   });
 
   it('Should have an end attribute', function(done) {
+    expect(map.attributes).to.have.property('end');
+    done();
+  });
+
+  it('Should have a travelMode attribute', function(done) {
     expect(map.attributes).to.have.property('end');
     done();
   });
