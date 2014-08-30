@@ -54,6 +54,8 @@ module.exports = Backbone.View.extend({
     delay = 200,
     successCounter = 0;
 
+    var yelpLL;
+
     function recurse() {
       console.log('i: ' + i);
       console.log('Current speed: ' + delay);
@@ -128,11 +130,17 @@ module.exports = Backbone.View.extend({
       }, function(results, status) {
         var highlight = self.businesses.models[i].get('name');
         try {
+          if (self.businesses.models[i].attributes.coordinates) {
+            console.log('yay!');
+            yelpLL = self.businesses.models[i].attributes.coordinates;
+          } else {
+            yelpLL = null;
+          }
           if (status === google.maps.GeocoderStatus.OK) {
             console.log('success!');
             var marker = new google.maps.Marker({
               map: self.map,
-              position: results[0].geometry.location,
+              position: yelpLL || results[0].geometry.location,
               title: highlight
             });
             if (i++ < self.businesses.length - 1) {

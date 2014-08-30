@@ -17,6 +17,13 @@ var BusinessModel = Backbone.Model.extend({
         hash.address = data.location.display_address.join(' ');
         hash.rating = data.rating;
 
+        if (data.location.coordinate && data.location.coordinate !== 'undefined') {
+            hash.coordinates = {
+                lat: data.location.coordinate.latitude,
+                lng: data.location.coordinate.longitude
+            };
+        }
+
         if (data.categories && data.categories !== 'undefined') {
         	hash.specificCategory = data.categories[0][0];
         } else {
