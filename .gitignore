@@ -4,3 +4,4 @@ node_modules
 .env
 .sass-cache
 test/testBundle.js
+app/styles.css
