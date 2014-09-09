@@ -54,7 +54,7 @@ table {
 body {
   width: 100%;
   margin: 0 auto;
-  font-family: "Times New Roman", Georgia, Serif;
+  font-family: "Montserrat", arial, sans-serif;
   background: white; }
 
 header {
@@ -63,9 +63,13 @@ header {
   background-color: #0266c8; }
   header h1 {
     text-align: center;
-    padding-top: 4px;
+    padding-top: 8px;
     font-size: 2em;
     color: white; }
+
+p.description {
+  font-size: 1.2em;
+  font-family: 'Open Sans'; }
 
 section {
   display: block;
@@ -128,15 +132,14 @@ nav {
   width: 100%;
   text-align: center;
   padding: 10px; }
-
-nav li {
-  border-left: 1px solid orange;
-  font-size: 1.4em;
-  display: inline;
-  padding-right: 20px;
-  padding-left: 20px;
-  margin: 0;
-  color: orange; }
+  nav li {
+    border-left: 1px solid orange;
+    font-size: 1.4em;
+    display: inline;
+    padding-right: 20px;
+    padding-left: 20px;
+    margin: 0;
+    color: orange; }
 
 #map-canvas {
   width: 500px;
