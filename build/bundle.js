@@ -12158,7 +12158,7 @@ var router = new Router();
 Backbone.history.start(); // Allows for fwd and back
 Backbone.history.navigate('', {
 	trigger: true
-}); // This starts the history?
+}); // This starts the history
 
 },{"./../bower_components/backbone/backbone.js":1,"./../bower_components/jquery/dist/jquery.js":2,"./routes/router":14}],5:[function(require,module,exports){
 'use strict';
@@ -12256,6 +12256,7 @@ var BusinessModel = Backbone.Model.extend({
         hash.id = data.id;
         hash.address = data.location.display_address.join(' ');
         hash.rating = data.rating;
+        hash.url = data.url;
 
         if (data.location.coordinate && data.location.coordinate !== 'undefined') {
             hash.coordinates = {
@@ -12338,18 +12339,23 @@ module.exports = function() {
 };
 },{"../collections/business-collection":5,"../models/map-model":9,"../views/init-view":20,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],13:[function(require,module,exports){
 'use strict';
-// update
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
 var $ = require("./../../bower_components/jquery/dist/jquery.js");
 Backbone.$ = $;
 
 module.exports = function() {
+	// Handle people clicking out of map (to business URL) and then back again:
+	// Since data no longer available, fail gracefully by redirecting home
+	if (!this.mapModel) {
+		Backbone.history.navigate('home', {
+			trigger: true
+		});
+	}
 	var MapView = require('../views/map-view');
 	var mapView = new MapView({model: this.mapModel, businesses: this.collection });
   $('#backbone').html(mapView.el);
 };
-
 },{"../views/map-view":21,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],14:[function(require,module,exports){
 'use strict';
 // update
@@ -12361,8 +12367,8 @@ Backbone.$ = $;
 module.exports = Backbone.Router.extend({
 	routes: {
 		'': 'init',
-		'map': 'map',
-		'destinations': 'businessCollection'
+		'home': 'init',
+		'map': 'map'
 	},
 	init: require('./init-route'),
 	map: require('./map-route'),
@@ -12653,27 +12659,34 @@ module.exports = Backbone.View.extend({
 
   createMarker: function() {
 
-    var self = this;
-    var geocoder = new google.maps.Geocoder();
-    var i = 0,
-    delay = 100,
-    successCounter = 0;
+    var self = this,
+      geocoder = new google.maps.Geocoder(),
+      i = 0,
+      delay = 100,
+      successCounter = 0;
 
-    var addMarker = function(position, name) {
+    var addMarker = function(position, name, url) {
       var marker = new google.maps.Marker({
         map: self.map,
         position: position,
-        title: name
+        title: name,
+        url: url,
+      });
+
+      // Add marker hyperlinks manually:
+      google.maps.event.addListener(marker, 'click', function() {
+        window.location.href = this.url;
       });
     };
 
     function recurse() {
-      var highlight = self.businesses.models[i].get('name');
 
       if (self.businesses.models[i].attributes.coordinates) {
 
         // Yelp available
-        addMarker(self.businesses.models[i].attributes.coordinates, highlight);
+        addMarker(self.businesses.models[i].attributes.coordinates,
+                  self.businesses.models[i].get('name'),
+                  self.businesses.models[i].attributes.url);
         if (i++ < self.businesses.length - 1) {
           setTimeout(recurse, delay);
         }
@@ -12685,7 +12698,9 @@ module.exports = Backbone.View.extend({
         }, function(results, status) {
           try {
             if (status === google.maps.GeocoderStatus.OK) {
-              addMarker(results[0].geometry.location, highlight);
+              addMarker(results[0].geometry.location,
+                        self.businesses.models[i].get('name'),
+                        self.businesses.models[i].attributes.url);
               if (i++ < self.businesses.length - 1) {
                 setTimeout(recurse, delay);
               }
@@ -12711,7 +12726,6 @@ module.exports = Backbone.View.extend({
     return this;
   }
 });
-
 },{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],22:[function(require,module,exports){
 
 },{}],23:[function(require,module,exports){

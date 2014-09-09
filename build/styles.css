@@ -106,7 +106,7 @@ input:focus {
   height: 100px;
   font-size: 2em;
   border: 1px solid #dedede;
-  margin-top: 70px;
+  margin-top: 76px;
   margin-left: 130px;
   cursor: pointer; }
 
@@ -152,9 +152,6 @@ footer {
     color: #0266c8; }
 
 @media (max-width: 400px) {
-  header {
-    background-color: #c41200; }
-
   section {
     margin-top: 60px;
     width: 540px; }
