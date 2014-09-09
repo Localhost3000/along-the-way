@@ -8,8 +8,8 @@ Backbone.$ = $;
 module.exports = Backbone.Router.extend({
 	routes: {
 		'': 'init',
-		'map': 'map',
-		'destinations': 'businessCollection'
+		'home': 'init',
+		'map': 'map'
 	},
 	init: require('./init-route'),
 	map: require('./map-route'),
