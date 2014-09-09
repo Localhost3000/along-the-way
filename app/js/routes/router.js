@@ -1,5 +1,4 @@
 'use strict';
-// update
 
 var Backbone = require('backbone');
 var $ = require('jquery');
@@ -8,10 +7,9 @@ Backbone.$ = $;
 module.exports = Backbone.Router.extend({
 	routes: {
 		'': 'init',
-		'map': 'map',
-		'destinations': 'businessCollection'
+		'home': 'init',
+		'map': 'map'
 	},
 	init: require('./init-route'),
-	map: require('./map-route'),
-	businessCollection: require('./business-collection-route')
+	map: require('./map-route')
 });

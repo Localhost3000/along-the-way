@@ -12158,9 +12158,9 @@ var router = new Router();
 Backbone.history.start(); // Allows for fwd and back
 Backbone.history.navigate('', {
 	trigger: true
-}); // This starts the history?
+}); // This starts the history
 
-},{"./../bower_components/backbone/backbone.js":1,"./../bower_components/jquery/dist/jquery.js":2,"./routes/router":14}],5:[function(require,module,exports){
+},{"./../bower_components/backbone/backbone.js":1,"./../bower_components/jquery/dist/jquery.js":2,"./routes/router":10}],5:[function(require,module,exports){
 'use strict';
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
@@ -12215,36 +12215,7 @@ module.exports = Backbone.Collection.extend({
 		this.fetch();
 	}
 });
-},{"../../bower_components/underscore":3,"../models/business-model":8,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],6:[function(require,module,exports){
-"use strict";
-
-var Backbone = require("./../../bower_components/backbone/backbone.js");
-var $ = require("./../../bower_components/jquery/dist/jquery.js");
-Backbone.$ = $;
-
-var Business = require('../models/business-model-test');
-
-module.exports = Backbone.Collection.extend({
-  model: Business
-});
-
-},{"../models/business-model-test":7,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],7:[function(require,module,exports){
-"use strict";
-
-var Backbone = require("./../../bower_components/backbone/backbone.js");
-var $ = require("./../../bower_components/jquery/dist/jquery.js");
-Backbone.$ = $;
-
-module.exports = Backbone.Model.extend({
-  defaults: {
-    name: "Test",
-    address: { lat: 42.3352, lng: -122},
-    rating: 4.5,
-    categories: "Test Food"
-  }
-});
-
-},{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],8:[function(require,module,exports){
+},{"../../bower_components/underscore":3,"../models/business-model":6,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],6:[function(require,module,exports){
 'use strict';
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
@@ -12256,6 +12227,7 @@ var BusinessModel = Backbone.Model.extend({
         hash.id = data.id;
         hash.address = data.location.display_address.join(' ');
         hash.rating = data.rating;
+        hash.url = data.url;
 
         if (data.location.coordinate && data.location.coordinate !== 'undefined') {
             hash.coordinates = {
@@ -12274,7 +12246,7 @@ var BusinessModel = Backbone.Model.extend({
 });
 
 module.exports = BusinessModel;
-},{"./../../bower_components/backbone/backbone.js":1}],9:[function(require,module,exports){
+},{"./../../bower_components/backbone/backbone.js":1}],7:[function(require,module,exports){
 "use strict";
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
@@ -12291,32 +12263,7 @@ module.exports = Backbone.Model.extend({
   }
 });
 
-},{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],10:[function(require,module,exports){
-'use strict';
-
-var Backbone = require("./../../bower_components/backbone/backbone.js");
-var RouteModel = Backbone.Model.extend({});
-module.exports = RouteModel;
-},{"./../../bower_components/backbone/backbone.js":1}],11:[function(require,module,exports){
-'use strict';
-//update
-
-var Backbone = require("./../../bower_components/backbone/backbone.js");
-var $ = require("./../../bower_components/jquery/dist/jquery.js");
-Backbone.$ = $;
-
-var BusinessCollection = require('../collections/business-collection');
-var businessCollection = new BusinessCollection();
-
-// Prepare the home view
-module.exports = function() {
-	var BusinessCollectionView = require('../views/business-collection-view');
-	var businessCollectionView = new BusinessCollectionView({
-		collection: businessCollection
-	});
-	$('#backbone').html(businessCollectionView.$el);
-};
-},{"../collections/business-collection":5,"../views/business-collection-view":18,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],12:[function(require,module,exports){
+},{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],8:[function(require,module,exports){
 'use strict';
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
@@ -12336,23 +12283,27 @@ module.exports = function() {
 	var initView = new InitView({model: this.mapModel, collection: this.collection});
 	$('#backbone').html(initView.$el);
 };
-},{"../collections/business-collection":5,"../models/map-model":9,"../views/init-view":20,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],13:[function(require,module,exports){
+},{"../collections/business-collection":5,"../models/map-model":7,"../views/init-view":12,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],9:[function(require,module,exports){
 'use strict';
-// update
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
 var $ = require("./../../bower_components/jquery/dist/jquery.js");
 Backbone.$ = $;
 
 module.exports = function() {
+	// Handle people clicking out of map (to business URL) and then back again:
+	// Since data no longer available, fail gracefully by redirecting home
+	if (!this.mapModel) {
+		Backbone.history.navigate('home', {
+			trigger: true
+		});
+	}
 	var MapView = require('../views/map-view');
 	var mapView = new MapView({model: this.mapModel, businesses: this.collection });
   $('#backbone').html(mapView.el);
 };
-
-},{"../views/map-view":21,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],14:[function(require,module,exports){
+},{"../views/map-view":13,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],10:[function(require,module,exports){
 'use strict';
-// update
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
 var $ = require("./../../bower_components/jquery/dist/jquery.js");
@@ -12361,14 +12312,13 @@ Backbone.$ = $;
 module.exports = Backbone.Router.extend({
 	routes: {
 		'': 'init',
-		'map': 'map',
-		'destinations': 'businessCollection'
+		'home': 'init',
+		'map': 'map'
 	},
 	init: require('./init-route'),
-	map: require('./map-route'),
-	businessCollection: require('./business-collection-route')
+	map: require('./map-route')
 });
-},{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2,"./business-collection-route":11,"./init-route":12,"./map-route":13}],15:[function(require,module,exports){
+},{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2,"./init-route":8,"./map-route":9}],11:[function(require,module,exports){
 var Handlebars = require("hbsify").runtime;
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
@@ -12376,101 +12326,10 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<h3>Collection:</h3>\n<div id='put_here'></div>\n";
+  return "<p class=\"description\">Enter your start and end points and hit &ldquo;Go&rdquo;&mdash;we&rsquo;ll find all the points of interest along the way!</p>\n<form class=\"init\">\n	<label>Start:</label>\n	<input name=\"start\" id=\"start\" placeholder=\"Will be populated automatically\">\n	<label>Destination:</label>\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n	<a href=\"#map\"><input type=\"submit\" id=\"search\" value=\"GO\"/></a>\n</form>\n";
   });
 
-},{"hbsify":43}],16:[function(require,module,exports){
-var Handlebars = require("hbsify").runtime;
-module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression;
-
-
-  buffer += "<h3>different place<h3>\n<p>\n  ";
-  if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "\n  ";
-  if (helper = helpers.address) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.address); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "\n  ";
-  if (helper = helpers.rating) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.rating); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "\n</p>\n";
-  return buffer;
-  });
-
-},{"hbsify":43}],17:[function(require,module,exports){
-var Handlebars = require("hbsify").runtime;
-module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  
-
-
-  return "<form class=\"init\">\n	<label>Start:</label>\n	<input name=\"start\" id=\"start\" placeholder=\"Will be populated automatically\">\n	<label>Destination:</label>\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n<a href=\"#map\"><input type=\"submit\" id=\"search\" value=\"GO\"/></a>\n</form>\n";
-  });
-
-},{"hbsify":43}],18:[function(require,module,exports){
-'use strict';
-
-var Backbone = require("./../../bower_components/backbone/backbone.js");
-var $ = require("./../../bower_components/jquery/dist/jquery.js");
-Backbone.$ = $;
-
-var BusinessCollection = require('../collections/business-collection');
-var Business = require('../models/business-model');
-var BusinessView = require('../views/business-view');
-
-module.exports = Backbone.View.extend({
-  tagName: 'div',
-
-  initialize: function() {
-    this.render();
-    this.collection.on('add', this.addOne, this);
-    this.collection.on('reset', this.addAll, this);
-  },
-
-  addOne: function(business) {
-    var businessView = new BusinessView({model: business});
-    this.$el.children('#put_here').append(businessView.$el);
-  },
-
-  addAll: function() {
-    this.$el.children('#put_here').html('');
-    this.collection.forEach(this.addOne);
-  },
-
-  render: function() {
-    var template = require('../templates/business-collection-templates.hbs');
-    this.$el.html(template());
-    this.addAll();
-    return this;
-  }
-});
-},{"../collections/business-collection":5,"../models/business-model":8,"../templates/business-collection-templates.hbs":15,"../views/business-view":19,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],19:[function(require,module,exports){
-'use strict';
-
-var Backbone = require("./../../bower_components/backbone/backbone.js");
-var $ = require("./../../bower_components/jquery/dist/jquery.js");
-Backbone.$ = $;
-
-module.exports = Backbone.View.extend({
-  tagName: 'div',
-  initialize: function(){
-    this.render();
-  },
-  render: function(){
-    var data = this.model.attributes;
-    var template = require('../templates/business-model-templates.hbs');
-    this.$el.html(template(data));
-    return this;
-  }
-});
-},{"../templates/business-model-templates.hbs":16,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],20:[function(require,module,exports){
+},{"hbsify":35}],12:[function(require,module,exports){
 'use strict';
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
@@ -12602,7 +12461,7 @@ var InitView = Backbone.View.extend({
 
 module.exports = InitView;
 
-},{"../templates/init-template.hbs":17,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],21:[function(require,module,exports){
+},{"../templates/init-template.hbs":11,"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],13:[function(require,module,exports){
 "use strict";
 
 var Backbone = require("./../../bower_components/backbone/backbone.js");
@@ -12653,27 +12512,34 @@ module.exports = Backbone.View.extend({
 
   createMarker: function() {
 
-    var self = this;
-    var geocoder = new google.maps.Geocoder();
-    var i = 0,
-    delay = 100,
-    successCounter = 0;
+    var self = this,
+      geocoder = new google.maps.Geocoder(),
+      i = 0,
+      delay = 100,
+      successCounter = 0;
 
-    var addMarker = function(position, name) {
+    var addMarker = function(position, name, url) {
       var marker = new google.maps.Marker({
         map: self.map,
         position: position,
-        title: name
+        title: name,
+        url: url,
+      });
+
+      // Add marker hyperlinks manually:
+      google.maps.event.addListener(marker, 'click', function() {
+        window.open(this.url, '_blank');
       });
     };
 
     function recurse() {
-      var highlight = self.businesses.models[i].get('name');
 
       if (self.businesses.models[i].attributes.coordinates) {
 
         // Yelp available
-        addMarker(self.businesses.models[i].attributes.coordinates, highlight);
+        addMarker(self.businesses.models[i].attributes.coordinates,
+                  self.businesses.models[i].get('name'),
+                  self.businesses.models[i].attributes.url);
         if (i++ < self.businesses.length - 1) {
           setTimeout(recurse, delay);
         }
@@ -12685,7 +12551,9 @@ module.exports = Backbone.View.extend({
         }, function(results, status) {
           try {
             if (status === google.maps.GeocoderStatus.OK) {
-              addMarker(results[0].geometry.location, highlight);
+              addMarker(results[0].geometry.location,
+                        self.businesses.models[i].get('name'),
+                        self.businesses.models[i].attributes.url);
               if (i++ < self.businesses.length - 1) {
                 setTimeout(recurse, delay);
               }
@@ -12711,10 +12579,9 @@ module.exports = Backbone.View.extend({
     return this;
   }
 });
+},{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],14:[function(require,module,exports){
 
-},{"./../../bower_components/backbone/backbone.js":1,"./../../bower_components/jquery/dist/jquery.js":2}],22:[function(require,module,exports){
-
-},{}],23:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -13885,7 +13752,7 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":24,"ieee754":25}],24:[function(require,module,exports){
+},{"base64-js":16,"ieee754":17}],16:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -14007,7 +13874,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],25:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -14093,7 +13960,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14398,7 +14265,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],27:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -14423,7 +14290,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],28:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -14488,10 +14355,10 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],29:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":30}],30:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":22}],22:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -14584,7 +14451,7 @@ function forEach (xs, f) {
 }
 
 }).call(this,require("JkpR2F"))
-},{"./_stream_readable":32,"./_stream_writable":34,"JkpR2F":28,"core-util-is":35,"inherits":27}],31:[function(require,module,exports){
+},{"./_stream_readable":24,"./_stream_writable":26,"JkpR2F":20,"core-util-is":27,"inherits":19}],23:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14632,7 +14499,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./_stream_transform":33,"core-util-is":35,"inherits":27}],32:[function(require,module,exports){
+},{"./_stream_transform":25,"core-util-is":27,"inherits":19}],24:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -15618,7 +15485,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require("JkpR2F"))
-},{"JkpR2F":28,"buffer":23,"core-util-is":35,"events":26,"inherits":27,"isarray":36,"stream":42,"string_decoder/":37}],33:[function(require,module,exports){
+},{"JkpR2F":20,"buffer":15,"core-util-is":27,"events":18,"inherits":19,"isarray":28,"stream":34,"string_decoder/":29}],25:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15830,7 +15697,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":30,"core-util-is":35,"inherits":27}],34:[function(require,module,exports){
+},{"./_stream_duplex":22,"core-util-is":27,"inherits":19}],26:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16220,7 +16087,7 @@ function endWritable(stream, state, cb) {
 }
 
 }).call(this,require("JkpR2F"))
-},{"./_stream_duplex":30,"JkpR2F":28,"buffer":23,"core-util-is":35,"inherits":27,"stream":42}],35:[function(require,module,exports){
+},{"./_stream_duplex":22,"JkpR2F":20,"buffer":15,"core-util-is":27,"inherits":19,"stream":34}],27:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16330,12 +16197,12 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":23}],36:[function(require,module,exports){
+},{"buffer":15}],28:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],37:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16558,10 +16425,10 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":23}],38:[function(require,module,exports){
+},{"buffer":15}],30:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":31}],39:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":23}],31:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Readable = exports;
 exports.Writable = require('./lib/_stream_writable.js');
@@ -16569,13 +16436,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":30,"./lib/_stream_passthrough.js":31,"./lib/_stream_readable.js":32,"./lib/_stream_transform.js":33,"./lib/_stream_writable.js":34}],40:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":22,"./lib/_stream_passthrough.js":23,"./lib/_stream_readable.js":24,"./lib/_stream_transform.js":25,"./lib/_stream_writable.js":26}],32:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":33}],41:[function(require,module,exports){
+},{"./lib/_stream_transform.js":25}],33:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":34}],42:[function(require,module,exports){
+},{"./lib/_stream_writable.js":26}],34:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16704,7 +16571,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":26,"inherits":27,"readable-stream/duplex.js":29,"readable-stream/passthrough.js":38,"readable-stream/readable.js":39,"readable-stream/transform.js":40,"readable-stream/writable.js":41}],43:[function(require,module,exports){
+},{"events":18,"inherits":19,"readable-stream/duplex.js":21,"readable-stream/passthrough.js":30,"readable-stream/readable.js":31,"readable-stream/transform.js":32,"readable-stream/writable.js":33}],35:[function(require,module,exports){
 var Handlebars = require('handlebars');
 var through = require('through');
 
@@ -16732,7 +16599,7 @@ var hbsify = function(file) {
 module.exports = hbsify;
 module.exports.runtime = require('handlebars/runtime')["default"];
 
-},{"handlebars":58,"handlebars/runtime":59,"through":60}],44:[function(require,module,exports){
+},{"handlebars":50,"handlebars/runtime":51,"through":52}],36:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var Handlebars = require("./handlebars.runtime")["default"];
@@ -16770,7 +16637,7 @@ Handlebars = create();
 Handlebars.create = create;
 
 exports["default"] = Handlebars;
-},{"./handlebars.runtime":45,"./handlebars/compiler/ast":47,"./handlebars/compiler/base":48,"./handlebars/compiler/compiler":49,"./handlebars/compiler/javascript-compiler":50}],45:[function(require,module,exports){
+},{"./handlebars.runtime":37,"./handlebars/compiler/ast":39,"./handlebars/compiler/base":40,"./handlebars/compiler/compiler":41,"./handlebars/compiler/javascript-compiler":42}],37:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var base = require("./handlebars/base");
@@ -16803,7 +16670,7 @@ var Handlebars = create();
 Handlebars.create = create;
 
 exports["default"] = Handlebars;
-},{"./handlebars/base":46,"./handlebars/exception":54,"./handlebars/runtime":55,"./handlebars/safe-string":56,"./handlebars/utils":57}],46:[function(require,module,exports){
+},{"./handlebars/base":38,"./handlebars/exception":46,"./handlebars/runtime":47,"./handlebars/safe-string":48,"./handlebars/utils":49}],38:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -16984,7 +16851,7 @@ exports.log = log;var createFrame = function(object) {
   return obj;
 };
 exports.createFrame = createFrame;
-},{"./exception":54,"./utils":57}],47:[function(require,module,exports){
+},{"./exception":46,"./utils":49}],39:[function(require,module,exports){
 "use strict";
 var Exception = require("../exception")["default"];
 
@@ -17212,7 +17079,7 @@ var AST = {
 // Must be exported as an object rather than the root of the module as the jison lexer
 // most modify the object to operate properly.
 exports["default"] = AST;
-},{"../exception":54}],48:[function(require,module,exports){
+},{"../exception":46}],40:[function(require,module,exports){
 "use strict";
 var parser = require("./parser")["default"];
 var AST = require("./ast")["default"];
@@ -17228,7 +17095,7 @@ function parse(input) {
 }
 
 exports.parse = parse;
-},{"./ast":47,"./parser":51}],49:[function(require,module,exports){
+},{"./ast":39,"./parser":43}],41:[function(require,module,exports){
 "use strict";
 var Exception = require("../exception")["default"];
 
@@ -17698,7 +17565,7 @@ exports.precompile = precompile;function compile(input, options, env) {
 }
 
 exports.compile = compile;
-},{"../exception":54}],50:[function(require,module,exports){
+},{"../exception":46}],42:[function(require,module,exports){
 "use strict";
 var COMPILER_REVISION = require("../base").COMPILER_REVISION;
 var REVISION_CHANGES = require("../base").REVISION_CHANGES;
@@ -18641,7 +18508,7 @@ JavaScriptCompiler.isValidJavaScriptVariableName = function(name) {
 };
 
 exports["default"] = JavaScriptCompiler;
-},{"../base":46,"../exception":54}],51:[function(require,module,exports){
+},{"../base":38,"../exception":46}],43:[function(require,module,exports){
 "use strict";
 /* jshint ignore:start */
 /* Jison generated parser */
@@ -19132,7 +18999,7 @@ function Parser () { this.yy = {}; }Parser.prototype = parser;parser.Parser = Pa
 return new Parser;
 })();exports["default"] = handlebars;
 /* jshint ignore:end */
-},{}],52:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 "use strict";
 var Visitor = require("./visitor")["default"];
 
@@ -19271,7 +19138,7 @@ PrintVisitor.prototype.content = function(content) {
 PrintVisitor.prototype.comment = function(comment) {
   return this.pad("{{! '" + comment.comment + "' }}");
 };
-},{"./visitor":53}],53:[function(require,module,exports){
+},{"./visitor":45}],45:[function(require,module,exports){
 "use strict";
 function Visitor() {}
 
@@ -19284,7 +19151,7 @@ Visitor.prototype = {
 };
 
 exports["default"] = Visitor;
-},{}],54:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 "use strict";
 
 var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
@@ -19313,7 +19180,7 @@ function Exception(message, node) {
 Exception.prototype = new Error();
 
 exports["default"] = Exception;
-},{}],55:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -19451,7 +19318,7 @@ exports.program = program;function invokePartial(partial, name, context, helpers
 exports.invokePartial = invokePartial;function noop() { return ""; }
 
 exports.noop = noop;
-},{"./base":46,"./exception":54,"./utils":57}],56:[function(require,module,exports){
+},{"./base":38,"./exception":46,"./utils":49}],48:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
 function SafeString(string) {
@@ -19463,7 +19330,7 @@ SafeString.prototype.toString = function() {
 };
 
 exports["default"] = SafeString;
-},{}],57:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 "use strict";
 /*jshint -W004 */
 var SafeString = require("./safe-string")["default"];
@@ -19540,7 +19407,7 @@ exports.escapeExpression = escapeExpression;function isEmpty(value) {
 }
 
 exports.isEmpty = isEmpty;
-},{"./safe-string":56}],58:[function(require,module,exports){
+},{"./safe-string":48}],50:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 
@@ -19567,12 +19434,12 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions[".hbs"] = extension;
 }
 
-},{"../dist/cjs/handlebars":44,"../dist/cjs/handlebars/compiler/printer":52,"../dist/cjs/handlebars/compiler/visitor":53,"fs":22}],59:[function(require,module,exports){
+},{"../dist/cjs/handlebars":36,"../dist/cjs/handlebars/compiler/printer":44,"../dist/cjs/handlebars/compiler/visitor":45,"fs":14}],51:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime');
 
-},{"./dist/cjs/handlebars.runtime":45}],60:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":37}],52:[function(require,module,exports){
 (function (process){
 var Stream = require('stream')
 
@@ -19684,4 +19551,4 @@ function through (write, end, opts) {
 
 
 }).call(this,require("JkpR2F"))
-},{"JkpR2F":28,"stream":42}]},{},[4,5,6,7,8,9,10,11,12,13,14,18,19,20,21]);
+},{"JkpR2F":20,"stream":34}]},{},[4,5,6,7,8,9,10,12,13]);

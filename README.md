@@ -8,6 +8,6 @@ Check it out: [http://localhost-3000.herokuapp.com/](http://localhost-3000.herok
 Tests
 =====
 
-You can run the browser-based tests with `grunt test`. Unit tests live in the `test` directory.
+You can run the browser-based tests with `grunt test`. Run the mocha tests with `mocha test/mocha/api`.
 
 Have fun. :)

@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 var assert = require('chai').assert;
-var Client = require('../../lib/yelp-api.js');
+var Client = require('../../../lib/yelp-api.js');
 
 
 describe('OAuth client', function() {

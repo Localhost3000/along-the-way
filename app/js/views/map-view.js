@@ -48,27 +48,34 @@ module.exports = Backbone.View.extend({
 
   createMarker: function() {
 
-    var self = this;
-    var geocoder = new google.maps.Geocoder();
-    var i = 0,
-    delay = 100,
-    successCounter = 0;
+    var self = this,
+      geocoder = new google.maps.Geocoder(),
+      i = 0,
+      delay = 100,
+      successCounter = 0;
 
-    var addMarker = function(position, name) {
+    var addMarker = function(position, name, url) {
       var marker = new google.maps.Marker({
         map: self.map,
         position: position,
-        title: name
+        title: name,
+        url: url,
+      });
+
+      // Add marker hyperlinks manually:
+      google.maps.event.addListener(marker, 'click', function() {
+        window.open(this.url, '_blank');
       });
     };
 
     function recurse() {
-      var highlight = self.businesses.models[i].get('name');
 
       if (self.businesses.models[i].attributes.coordinates) {
 
         // Yelp available
-        addMarker(self.businesses.models[i].attributes.coordinates, highlight);
+        addMarker(self.businesses.models[i].attributes.coordinates,
+                  self.businesses.models[i].get('name'),
+                  self.businesses.models[i].attributes.url);
         if (i++ < self.businesses.length - 1) {
           setTimeout(recurse, delay);
         }
@@ -80,7 +87,9 @@ module.exports = Backbone.View.extend({
         }, function(results, status) {
           try {
             if (status === google.maps.GeocoderStatus.OK) {
-              addMarker(results[0].geometry.location, highlight);
+              addMarker(results[0].geometry.location,
+                        self.businesses.models[i].get('name'),
+                        self.businesses.models[i].attributes.url);
               if (i++ < self.businesses.length - 1) {
                 setTimeout(recurse, delay);
               }

@@ -9,6 +9,7 @@ var BusinessModel = Backbone.Model.extend({
         hash.id = data.id;
         hash.address = data.location.display_address.join(' ');
         hash.rating = data.rating;
+        hash.url = data.url;
 
         if (data.location.coordinate && data.location.coordinate !== 'undefined') {
             hash.coordinates = {
