@@ -15,9 +15,14 @@ var InitView = Backbone.View.extend({
       navigator.geolocation.getCurrentPosition(function(position) {
         var myLatlng = new google.maps.LatLng(position.coords.latitude,
           position.coords.longitude);
+
+        // Dirty hack to create a short route if no destination is entered
+        var endLatlng = new google.maps.LatLng(position.coords.latitude - 0.00001,
+          position.coords.longitude - 0.00001);
+
         self.getAddress(myLatlng);
         self.model.set("start", myLatlng);
-        self.model.set("end", myLatlng);
+        self.model.set("end", endLatlng);
        }, function() { console.log('success'); });
     } else {
     // Browser doesn't support Geolocation
@@ -84,11 +89,6 @@ var InitView = Backbone.View.extend({
 	search: function(e) {
     e.preventDefault(); // Otherwise the page will reload!
 		var self = this;
-
-    if (this.$el.closest('div').find('#destination').val() === '') {
-      alert('Enter a destination!');
-      return false;
-    }
 
     // Grab start and destination from the form
     var start = this.$el.closest('div').find('#start').val() === '' ?

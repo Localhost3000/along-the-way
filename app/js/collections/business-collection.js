@@ -18,7 +18,6 @@ module.exports = Backbone.Collection.extend({
 			JSON.stringify(this.locations) +
 			'/' +
 			JSON.stringify(this.params);
-		console.log(URLstring);
 		return URLstring;
 	},
 
@@ -30,41 +29,21 @@ module.exports = Backbone.Collection.extend({
 
 		var self = this;
 		var allBusinesses = [];
-		var coordinateTicker = 0;
-		// console.log('response: ' + JSON.stringify(response));
 
 		response.forEach(function(location) {
-			// console.log('location: ' + JSON.stringify(location));
 			var businesses = JSON.parse(location).businesses;
 			businesses.forEach(function(business) {
-				// Verbose checking for now, but we could combine these two:
 				if (uniqueID[business.id]) {
-					console.log('Duplicate business! ' + business.name);
 					return;
 				}
 				if (business.distance > self.params.radius_filter) {
-					console.log('Yelp distance error! ' + business.name +
-						' is ' +
-						business.distance +
-						' off route, which is more than the max of ' +
-						self.params.radius_filter);
 					return;
-				}
-				if (business.location.coordinate) {
-					coordinateTicker++;
-					console.log('This business has coordinates! ' +
-						business.name + ' | ' +
-						business.location.coordinate.latitude + ' | ' +
-						business.location.coordinate.longitude + ' | ' +
-						business.location.display_address);
 				}
 				uniqueID[business.id] = true;
 				allBusinesses.push(business);
 			});
 		});
 
-		console.log('Number of businesses in collection: ' + allBusinesses.length);
-		console.log('Number of businesses with coordates: ' + coordinateTicker);
 		return allBusinesses;
 	},
 

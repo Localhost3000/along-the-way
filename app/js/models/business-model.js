@@ -4,13 +4,6 @@ var Backbone = require('backbone');
 var BusinessModel = Backbone.Model.extend({
 	idAttribute: 'id',
 	parse: function(data) {
-        console.log('data coming into model: ' +
-            data.name +
-            ' | ' +
-            data.location.display_address +
-            ' | distance: ' +
-            data.distance);
-
         var hash = {};
         hash.name = data.name;
         hash.id = data.id;

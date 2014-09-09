@@ -15,8 +15,11 @@ describe('Backbone Map View', function() {
   before(function(done) {
     sinon.spy(MapView.prototype, 'render');
     sinon.spy(MapView.prototype, 'getDirections');
+    sinon.spy(MapView.prototype, 'createMarker');
 
     this.collection = new BusinessCollection();
+    this.collection.add(Backbone.Model.extend({}));
+
     this.mapModel = new MapModel();
     this.mapView = new MapView({ model: this.mapModel, businesses: this.collection} );
     done();
@@ -27,8 +30,14 @@ describe('Backbone Map View', function() {
     done();
   });
 
-  it('should call getDirections', function(done) {
+  it('should call getDirections on creation', function(done) {
     expect(MapView.prototype.getDirections.called).to.be.true;
+    done();
+  });
+
+  it('should have a map object (duh)', function(done) {
+    expect(this.mapView).to.have.property('map');
+    expect(this.mapView.map).to.exist;
     done();
   });
 
@@ -37,9 +46,16 @@ describe('Backbone Map View', function() {
     done();
   });
 
+  it('should call createMarker on collection sync', function(done) {
+    this.collection.trigger('sync');
+    expect(MapView.prototype.createMarker.called).to.be.true;
+    done();
+  });
+
   after(function(done) {
     MapView.prototype.render.restore();
     MapView.prototype.getDirections.restore();
+    MapView.prototype.createMarker.restore();
     done();
   });
 });
