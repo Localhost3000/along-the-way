@@ -12326,7 +12326,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<p class=\"description\">Enter your start and end points and hit &ldquo;Go&rdquo;&mdash;we&rsquo;ll find all the points of interest along the way!</p>\n<form class=\"init\">\n	<label>Start:</label>\n	<input name=\"start\" id=\"start\" placeholder=\"Will be populated automatically\">\n	<label>Destination:</label>\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n	<a href=\"#map\"><input type=\"submit\" id=\"search\" value=\"GO\"/></a>\n</form>\n";
+  return "<p class=\"description\">Enter your start and end points and hit &ldquo;Go&rdquo;&mdash;we&rsquo;ll find all the points of interest along the way!</p>\n<form class=\"init\">\n	<label>Start:</label>\n	<input name=\"start\" id=\"start\">\n	<label>Destination:</label>\n	<input name=\"destination\" id=\"destination\" placeholder=\"Where do you want to go?\">\n	<a href=\"#map\"><input type=\"submit\" id=\"search\" value=\"GO\"/></a>\n</form>\n";
   });
 
 },{"hbsify":35}],12:[function(require,module,exports){
